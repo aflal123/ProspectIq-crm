@@ -2,10 +2,36 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 
+// SVG Icons
+const IconUser = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+    <circle cx="12" cy="7" r="4"/>
+  </svg>
+);
+
+const IconMail = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2" y="4" width="20" height="16" rx="2"/>
+    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+  </svg>
+);
+
+const IconLock = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+  </svg>
+);
+
+const IconBolt = () => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="#3b82f6" stroke="none">
+    <path d="M13 2L4.5 13.5H11L10 22L20.5 10H14L13 2Z"/>
+  </svg>
+);
+
 const Register = () => {
   const navigate = useNavigate();
-
-  // Form state — controlled inputs
   const [form, setForm] = useState({ name: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -15,18 +41,12 @@ const Register = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();     // prevent browser refresh
+    e.preventDefault();
     setError('');
     setLoading(true);
-
     try {
-      // POST /api/auth/register → sends name, email, password to backend
       await api.post('/auth/register', form);
-
-      // On success → go to login page
-      navigate('/login', {
-        state: { message: 'Account created! Please log in.' }
-      });
+      navigate('/login', { state: { message: 'Account created! Please log in.' } });
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Try again.');
     } finally {
@@ -34,94 +54,183 @@ const Register = () => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-black flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
+  const focusBorder = (e) => { e.currentTarget.style.borderColor = '#3b82f6'; };
+  const blurBorder  = (e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; };
 
-        {/* Header */}
-        <div className="text-center mb-10">
-          <h1 className="text-white text-3xl font-bold tracking-widest mb-2">
-            Prospect<span className="text-blue-500">IQ</span>
+  return (
+    <div style={styles.page}>
+      <div style={styles.orb1} />
+      <div style={styles.orb2} />
+      <div style={styles.orb3} />
+
+      <div style={styles.container}>
+        {/* Logo */}
+        <div style={styles.logoWrap}>
+          <div style={styles.logoIcon}><IconBolt /></div>
+          <h1 style={styles.logo}>
+            Prospect<span style={styles.logoAccent}>IQ</span>
           </h1>
-          <p className="text-gray-400 text-sm">CRM for modern sales teams</p>
+          <p style={styles.tagline}>CRM for modern sales teams</p>
         </div>
 
         {/* Card */}
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
-          <h2 className="text-white text-xl font-semibold mb-6">Create your account</h2>
+        <div style={styles.card}>
+          <h2 style={styles.cardTitle}>Create your account</h2>
+          <p style={styles.cardSub}>Start closing deals smarter</p>
 
-          {/* Error message */}
           {error && (
-            <div className="bg-red-900/40 border border-red-700 text-red-300 text-sm rounded-lg px-4 py-3 mb-5">
+            <div style={styles.errorBox}>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fca5a5" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} style={styles.form}>
             {/* Name */}
-            <div>
-              <label className="text-gray-400 text-sm mb-1.5 block">Full Name</label>
-              <input
-                type="text"
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="John Doe"
-                required
-                className="w-full bg-black border border-gray-700 text-white placeholder-gray-600 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors"
-              />
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Full Name</label>
+              <div style={styles.inputWrap} onFocus={focusBorder} onBlur={blurBorder}>
+                <IconUser />
+                <input type="text" name="name" value={form.name} onChange={handleChange}
+                  placeholder="John Doe" required style={styles.input} />
+              </div>
             </div>
 
             {/* Email */}
-            <div>
-              <label className="text-gray-400 text-sm mb-1.5 block">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                placeholder="you@company.com"
-                required
-                className="w-full bg-black border border-gray-700 text-white placeholder-gray-600 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors"
-              />
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Email Address</label>
+              <div style={styles.inputWrap} onFocus={focusBorder} onBlur={blurBorder}>
+                <IconMail />
+                <input type="email" name="email" value={form.email} onChange={handleChange}
+                  placeholder="you@company.com" required style={styles.input} />
+              </div>
             </div>
 
             {/* Password */}
-            <div>
-              <label className="text-gray-400 text-sm mb-1.5 block">Password</label>
-              <input
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                placeholder="Min 6 characters"
-                required
-                minLength={6}
-                className="w-full bg-black border border-gray-700 text-white placeholder-gray-600 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-blue-500 transition-colors"
-              />
+            <div style={styles.fieldGroup}>
+              <label style={styles.label}>Password</label>
+              <div style={styles.inputWrap} onFocus={focusBorder} onBlur={blurBorder}>
+                <IconLock />
+                <input type="password" name="password" value={form.password} onChange={handleChange}
+                  placeholder="Min 6 characters" required minLength={6} style={styles.input} />
+              </div>
             </div>
 
             {/* Submit */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 hover:bg-blue-500 disabled:bg-blue-900 disabled:cursor-not-allowed text-white font-semibold py-3 rounded-lg transition-colors text-sm mt-2"
+              style={{ ...styles.btn, opacity: loading ? 0.75 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+              onMouseEnter={e => { if (!loading) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 30px rgba(59,130,246,0.45)'; }}}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(59,130,246,0.25)'; }}
             >
-              {loading ? 'Creating account...' : 'Create Account'}
+              {loading ? (
+                <span style={styles.btnContent}>
+                  <span style={styles.spinner} /> Creating account...
+                </span>
+              ) : (
+                <span style={styles.btnContent}>
+                  Create Account
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </span>
+              )}
             </button>
           </form>
 
-          {/* Link to login */}
-          <p className="text-gray-500 text-sm text-center mt-6">
+          <div style={styles.divider}>
+            <span style={styles.dividerLine} />
+            <span style={styles.dividerText}>or</span>
+            <span style={styles.dividerLine} />
+          </div>
+
+          <p style={styles.switchText}>
             Already have an account?{' '}
-            <Link to="/login" className="text-blue-400 hover:text-blue-300 transition-colors">
-              Sign in
-            </Link>
+            <Link to="/login" style={styles.link}>Sign in</Link>
           </p>
         </div>
+
+        {/* Trust badges */}
+        <div style={styles.badges}>
+          {[
+            { icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>, text: 'Secure' },
+            { icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>, text: 'Instant setup' },
+            { icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>, text: 'AI-powered' },
+          ].map(({ icon, text }) => (
+            <span key={text} style={styles.badge}>{icon} {text}</span>
+          ))}
+        </div>
       </div>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(30px,-20px)} }
+        @keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-20px,30px)} }
+        @keyframes float3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(15px,15px)} }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        input::placeholder { color: rgba(255,255,255,0.18); }
+        input:focus { outline: none; }
+      `}</style>
     </div>
   );
+};
+
+const styles = {
+  page: {
+    minHeight: '100vh',
+    background: 'linear-gradient(135deg, #080810 0%, #0d0d1f 50%, #080810 100%)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+    fontFamily: "'Inter', system-ui, sans-serif",
+    position: 'relative', overflow: 'hidden', padding: '20px',
+  },
+  orb1: { position:'absolute', top:'-5%', right:'5%', width:'550px', height:'550px', borderRadius:'50%', background:'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)', animation:'float1 8s ease-in-out infinite', pointerEvents:'none' },
+  orb2: { position:'absolute', bottom:'-10%', left:'0%', width:'600px', height:'600px', borderRadius:'50%', background:'radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%)', animation:'float2 11s ease-in-out infinite', pointerEvents:'none' },
+  orb3: { position:'absolute', top:'35%', left:'35%', width:'350px', height:'350px', borderRadius:'50%', background:'radial-gradient(circle, rgba(16,185,129,0.05) 0%, transparent 70%)', animation:'float3 13s ease-in-out infinite', pointerEvents:'none' },
+  container: { width:'100%', maxWidth:'420px', display:'flex', flexDirection:'column', alignItems:'center', gap:'24px', position:'relative', zIndex:10 },
+  logoWrap: { textAlign:'center' },
+  logoIcon: { marginBottom:'10px', display:'flex', justifyContent:'center' },
+  logo: { fontSize:'28px', fontWeight:800, color:'#fff', letterSpacing:'3px', margin:0 },
+  logoAccent: { color:'#3b82f6' },
+  tagline: { color:'rgba(255,255,255,0.3)', fontSize:'13px', marginTop:'6px' },
+  card: {
+    width:'100%',
+    background:'rgba(255,255,255,0.03)',
+    backdropFilter:'blur(24px)', WebkitBackdropFilter:'blur(24px)',
+    border:'1px solid rgba(255,255,255,0.07)',
+    borderRadius:'24px', padding:'36px 32px',
+    boxShadow:'0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)',
+  },
+  cardTitle: { fontSize:'22px', fontWeight:700, color:'#fff', margin:0 },
+  cardSub: { color:'rgba(255,255,255,0.3)', fontSize:'13px', marginTop:'5px', marginBottom:'28px' },
+  errorBox: { background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.25)', color:'#fca5a5', borderRadius:'12px', padding:'12px 16px', fontSize:'13px', marginBottom:'20px', display:'flex', alignItems:'center', gap:'8px' },
+  form: { display:'flex', flexDirection:'column', gap:'18px' },
+  fieldGroup: { display:'flex', flexDirection:'column', gap:'8px' },
+  label: { fontSize:'11px', fontWeight:600, color:'rgba(255,255,255,0.4)', letterSpacing:'0.8px', textTransform:'uppercase' },
+  inputWrap: {
+    display:'flex', alignItems:'center', gap:'12px',
+    background:'rgba(255,255,255,0.03)',
+    border:'1px solid rgba(255,255,255,0.08)',
+    borderRadius:'12px', padding:'13px 16px',
+    transition:'border-color 0.2s ease',
+  },
+  input: { flex:1, background:'transparent', border:'none', color:'#fff', fontSize:'14px', fontFamily:"'Inter', sans-serif" },
+  btn: {
+    width:'100%', marginTop:'6px',
+    background:'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)',
+    color:'#fff', border:'none', borderRadius:'12px',
+    padding:'15px', fontSize:'15px', fontWeight:600,
+    transition:'all 0.2s ease',
+    boxShadow:'0 4px 15px rgba(59,130,246,0.25)',
+    fontFamily:"'Inter', sans-serif",
+  },
+  btnContent: { display:'flex', alignItems:'center', justifyContent:'center', gap:'8px' },
+  spinner: { width:'15px', height:'15px', border:'2px solid rgba(255,255,255,0.3)', borderTop:'2px solid #fff', borderRadius:'50%', display:'inline-block', animation:'spin 0.8s linear infinite' },
+  divider: { display:'flex', alignItems:'center', gap:'12px', margin:'24px 0 0 0' },
+  dividerLine: { flex:1, height:'1px', background:'rgba(255,255,255,0.07)' },
+  dividerText: { color:'rgba(255,255,255,0.2)', fontSize:'12px' },
+  switchText: { textAlign:'center', color:'rgba(255,255,255,0.35)', fontSize:'14px', marginTop:'16px' },
+  link: { color:'#60a5fa', textDecoration:'none', fontWeight:600 },
+  badges: { display:'flex', gap:'10px', flexWrap:'wrap', justifyContent:'center' },
+  badge: { background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.07)', color:'rgba(255,255,255,0.35)', borderRadius:'20px', padding:'6px 14px', fontSize:'12px', display:'flex', alignItems:'center', gap:'6px' },
 };
 
 export default Register;
