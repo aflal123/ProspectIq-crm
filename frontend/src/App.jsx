@@ -6,7 +6,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import OTPVerify from './pages/OTPVerify';
 import Dashboard from './pages/Dashboard';
-// import Leads from './pages/Leads';
+import Leads from './pages/Leads';
 // import LeadDetail from './pages/LeadDetail';
 
 function App() {
@@ -23,7 +23,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/verify-otp" element={<OTPVerify />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        {/* <Route path="/leads" element={<ProtectedRoute><Leads /></ProtectedRoute>} /> */}
+        <Route path="/leads" element={<ProtectedRoute><Leads /></ProtectedRoute>} />
         {/* <Route path="/leads/:id" element={<ProtectedRoute><LeadDetail /></ProtectedRoute>} /> */}
 
         {/* 404 fallback */}
