@@ -5,23 +5,20 @@ const authMiddleware = require('../middleware/authMiddleware');
 const aiService = require('../services/aiService');
 const supabase = require('../db/supabase');
 
-// Get AI Score for a specific lead
 router.post('/score-lead/:leadId', authMiddleware, async (req, res) => {
   try {
     const { leadId } = req.params;
 
-    // Fetch lead
-    const { data: lead, error: leadError } = await supabase
+    const { data: lead, error } = await supabase
       .from('leads')
       .select('*')
       .eq('id', leadId)
       .single();
 
-    if (leadError || !lead) {
+    if (error || !lead) {
       return res.status(404).json({ message: 'Lead not found' });
     }
 
-    // Fetch notes for this lead
     const { data: notes } = await supabase
       .from('notes')
       .select('content')
@@ -29,12 +26,12 @@ router.post('/score-lead/:leadId', authMiddleware, async (req, res) => {
 
     const aiResult = await aiService.scoreLead(lead, notes || []);
 
-    // Optional: Save AI score to lead (good for history)
+    // Save AI result back to database
     await supabase
       .from('leads')
-      .update({ 
+      .update({
         ai_score: aiResult.score,
-        ai_reasoning: aiResult.reasoning 
+        ai_reason: aiResult.reasoning
       })
       .eq('id', leadId);
 
@@ -45,7 +42,7 @@ router.post('/score-lead/:leadId', authMiddleware, async (req, res) => {
 
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to generate AI score' });
+    res.status(500).json({ message: 'AI scoring failed' });
   }
 });
 

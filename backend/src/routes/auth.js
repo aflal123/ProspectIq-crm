@@ -6,6 +6,55 @@ const supabase = require('../db/supabase')
 const { generateOTP, getOTPExpiry } = require('../utils/otp')
 const { sendOTPEmail } = require('../utils/mailer')
 
+// Register New User
+router.post('/register', async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // Basic validation
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Name, email and password are required' });
+    }
+
+    // Check if user already exists
+    const { data: existingUser } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', email)
+      .single();
+
+    if (existingUser) {
+      return res.status(409).json({ message: 'User with this email already exists' });
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Insert new user
+    const { data, error } = await supabase
+      .from('users')
+      .insert({
+        name,
+        email,
+        password: hashedPassword
+      })
+      .select('id, name, email')
+      .single();
+
+    if (error) throw error;
+
+    res.status(201).json({
+      success: true,
+      message: 'User registered successfully',
+      user: data
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to register user' });
+  }
+});
 //  Login: verify password, send OTP
 router.post('/login', async (req, res) => {
   try {

@@ -46,3 +46,4 @@ const sendOTPEmail = async (toEmail, otp) => {
 
   await transporter.sendMail(mailOptions)
 }
+module.exports = { sendOTPEmail }
