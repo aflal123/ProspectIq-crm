@@ -31,6 +31,9 @@ const Navbar = () => {
         <Link to="/leads" className={`text-sm font-medium ${isActive('/leads')}`}>
           Leads
         </Link>
+        <Link to="/ai" className={`text-sm font-medium ${isActive('/ai')}`}>
+          AI Hub
+        </Link>
       </div>
 
       {/* User + Logout */}
