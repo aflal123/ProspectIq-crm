@@ -3,7 +3,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Register from './pages/Register';
 
 // ⬇️ We'll import more pages here as we build them
-// import Login from './pages/Login';
+import Login from './pages/Login';
 // import OTPVerify from './pages/OTPVerify';
 // import Dashboard from './pages/Dashboard';
 // import Leads from './pages/Leads';
@@ -16,11 +16,11 @@ function App() {
         {/* Public routes — no login needed */}
         <Route path="/register" element={<Register />} />
 
-        {/* Redirect root to register for now */}
-        <Route path="/" element={<Navigate to="/register" replace />} />
+        {/* Redirect root to login */}
+        <Route path="/" element={<Navigate to="/login" replace />} />
 
         {/* Protected routes will go here */}
-        {/* <Route path="/login" element={<Login />} /> */}
+        <Route path="/login" element={<Login />} />
         {/* <Route path="/verify-otp" element={<OTPVerify />} /> */}
         {/* <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} /> */}
         {/* <Route path="/leads" element={<ProtectedRoute><Leads /></ProtectedRoute>} /> */}
