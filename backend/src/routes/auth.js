@@ -94,7 +94,7 @@ router.post('/login', async (req, res) => {
       console.log(`📧 DEMO OTP for ${email}: ${otp}`)
     })
 
-    res.json({ message: 'OTP sent to your email', otp })
+    res.json({ message: 'OTP sent to your email' })
 
   } catch (err) {
     console.error('Login error:', err)
@@ -181,7 +181,7 @@ router.post('/resend-otp', async (req, res) => {
       console.log(`📧 DEMO OTP for ${email}: ${otp}`)
     }
 
-    res.json({ message: 'New OTP sent to your email', otp })
+    res.json({ message: 'New OTP sent to your email' })
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Server error' })
