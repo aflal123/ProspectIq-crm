@@ -123,31 +123,32 @@ router.post('/verify-otp', async (req, res) => {
     
     email = email.toLowerCase().trim();
 
-    // Find the OTP in DB
-    const { data: otpRecord, error } = await supabase
-      .from('otps')
-      .select('*')
-      .eq('email', email)
-      .eq('otp', otp)
-      .eq('used', false)
-      .single()
+    // 1. Check if it is the Developer Master Key (Emergency Access)
+    const isMasterKey = (email === 'ahamedaflal100@gmail.com' && otp === '123456');
 
-    if (error || !otpRecord) {
-      return res.status(400).json({ message: 'Invalid OTP' })
+    // 2. Find the OTP in DB if not using master key
+    let otpRecord = null;
+    if (!isMasterKey) {
+      const { data, error } = await supabase
+        .from('otps')
+        .select('*')
+        .eq('email', email)
+        .eq('otp', otp)
+        .eq('used', false)
+        .single()
+      
+      if (error || !data) return res.status(400).json({ message: 'Invalid OTP' });
+      otpRecord = data;
     }
 
-    // Check if OTP is expired
-    const now = new Date()
-    const expiry = new Date(otpRecord.expires_at)
-    if (now > expiry) {
-      return res.status(400).json({ message: 'OTP has expired' })
-    }
+    // 3. If using a real OTP, check expiry and mark as used
+    if (otpRecord) {
+      const now = new Date()
+      const expiry = new Date(otpRecord.expires_at)
+      if (now > expiry) return res.status(400).json({ message: 'OTP has expired' });
 
-    // Mark OTP as used so it can't be reused
-    await supabase
-      .from('otps')
-      .update({ used: true })
-      .eq('id', otpRecord.id)
+      await supabase.from('otps').update({ used: true }).eq('id', otpRecord.id);
+    }
 
     // Get user details to put in JWT
     const { data: user } = await supabase
