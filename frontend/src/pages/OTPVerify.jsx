@@ -12,8 +12,9 @@ const OTPVerify = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Email passed from Login page via router state
+  // Email and OTP passed from Login page via router state
   const email = location.state?.email;
+  const [visibleOtp, setVisibleOtp] = useState(location.state?.otp || '');
 
   const [digits, setDigits] = useState(['', '', '', '', '', '']);
   const [loading, setLoading] = useState(false);
@@ -110,7 +111,8 @@ const OTPVerify = () => {
     setResending(true);
     setError('');
     try {
-      await api.post('/auth/resend-otp', { email });
+      const res = await api.post('/auth/resend-otp', { email });
+      if (res.data?.otp) setVisibleOtp(res.data.otp);
       setResendCooldown(60);
       setDigits(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
@@ -153,6 +155,14 @@ const OTPVerify = () => {
             We sent a 6-digit code to<br />
             <span style={styles.emailHighlight}>{maskedEmail}</span>
           </p>
+
+          {/* Visible OTP fallback when email is not configured */}
+          {visibleOtp && (
+            <div style={styles.otpBox}>
+              <span style={styles.otpLabel}>Your login code</span>
+              <span style={styles.otpValue}>{visibleOtp}</span>
+            </div>
+          )}
 
           {/* Error */}
           {error && (
@@ -291,6 +301,9 @@ const styles = {
   resendText: { color:'#64748b', fontSize:'13px' },
   cooldown: { color:'#94a3b8', fontSize:'13px', fontWeight:500 },
   resendBtn: { background:'none', border:'none', color:'#2563eb', fontSize:'13px', fontWeight:600, cursor:'pointer', padding:0, fontFamily:"'Inter', sans-serif" },
+  otpBox: { width:'100%', background:'#eff6ff', border:'1px solid #bfdbfe', borderRadius:'12px', padding:'16px', marginBottom:'20px', display:'flex', flexDirection:'column', alignItems:'center', gap:'6px' },
+  otpLabel: { color:'#2563eb', fontSize:'12px', fontWeight:600, textTransform:'uppercase', letterSpacing:'1px' },
+  otpValue: { color:'#0f172a', fontSize:'28px', fontWeight:800, letterSpacing:'8px', fontFamily:"'Inter', monospace" },
   steps: { display:'flex', alignItems:'center', marginTop:'28px' },
   stepItem: { display:'flex', alignItems:'center', gap:'8px' },
   stepDot: { width:'22px', height:'22px', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 },

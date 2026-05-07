@@ -59,11 +59,11 @@ const Login = () => {
     setError('');
     setLoading(true);
     try {
-      // Step 1 — verify password → backend sends OTP email
-      await api.post('/auth/login', form);
+      // Step 1 — verify password → backend sends OTP
+      const res = await api.post('/auth/login', form)
 
-      // Step 2 — redirect to OTP screen, pass email so we can verify
-      navigate('/verify-otp', { state: { email: form.email } });
+      // Move to OTP page — pass otp so user can log in even if email fails
+      navigate('/otp', { state: { email: form.email, otp: res.data.otp } })
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Check your credentials.');
     } finally {

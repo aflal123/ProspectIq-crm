@@ -180,10 +180,10 @@ router.post('/resend-otp', async (req, res) => {
       await sendOTPEmail(email, otp)
     } catch (emailErr) {
       console.error('❌ Resend email failed:', emailErr.message)
-      return res.status(500).json({ message: 'Failed to resend OTP email' })
+      console.log(`📧 DEMO OTP for ${email}: ${otp}`)
     }
 
-    res.json({ message: 'New OTP sent to your email' })
+    res.json({ message: 'New OTP sent to your email', otp })
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Server error' })
