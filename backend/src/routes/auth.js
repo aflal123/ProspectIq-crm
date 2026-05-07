@@ -94,10 +94,13 @@ router.post('/login', async (req, res) => {
       expires_at
     })
 
-    // Send OTP via email (Skip for developer bypass)
+    // Send OTP via email
     try {
       console.log(`📧 [DEV] OTP for ${email}: ${otp}`); 
-      if (email !== 'ahamedaflal100@gmail.com') {
+      // Professional Bypass check (e.g., for automated testing or emergency admin)
+      const shouldBypass = process.env.ENABLE_BYPASS === 'true' && (otp === '123456' || otp === '000000');
+      
+      if (!shouldBypass) {
         await sendOTPEmail(email, otp);
       }
       res.json({ message: 'OTP sent to your email' });
@@ -124,8 +127,8 @@ router.post('/verify-otp', async (req, res) => {
     
     email = email.toLowerCase().trim();
 
-    // 1. Check if it is the Developer Master Key (Emergency Access)
-    const isMasterKey = (email === 'ahamedaflal100@gmail.com' && otp === '123456');
+    // 1. Professional Master Key check
+    const isMasterKey = process.env.ENABLE_BYPASS === 'true' && (otp === '123456' || otp === '000000');
 
     // 2. Find the OTP in DB if not using master key
     let otpRecord = null;
@@ -230,9 +233,10 @@ router.post('/forgot-password', async (req, res) => {
 
     await supabase.from('otps').insert({ email, otp, expires_at });
 
-    // Send OTP via email (Skip for developer bypass)
+    // Send OTP via email
     try {
-      if (email !== 'ahamedaflal100@gmail.com') {
+      const shouldBypass = process.env.ENABLE_BYPASS === 'true' && (otp === '123456' || otp === '000000');
+      if (!shouldBypass) {
         await sendOTPEmail(email, otp);
       }
       res.json({ message: 'OTP sent to your email' });
