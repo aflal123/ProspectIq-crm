@@ -157,7 +157,7 @@ const OTPVerify = () => {
           {/* Error */}
           {error && (
             <div style={styles.errorBox}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fca5a5" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
               {error}
             </div>
           )}
@@ -178,13 +178,13 @@ const OTPVerify = () => {
                   disabled={loading}
                   style={{
                     ...styles.digitInput,
-                    borderColor: digit ? '#3b82f6' : 'rgba(255,255,255,0.1)',
-                    background: digit ? 'rgba(59,130,246,0.1)' : 'rgba(255,255,255,0.03)',
-                    color: digit ? '#fff' : 'rgba(255,255,255,0.3)',
+                    borderColor: digit ? '#3b82f6' : '#e2e8f0',
+                    background: digit ? '#eff6ff' : '#ffffff',
+                    color: digit ? '#0f172a' : '#94a3b8',
                     opacity: loading ? 0.6 : 1,
                   }}
                   onFocus={e => { e.target.style.borderColor = '#3b82f6'; e.target.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.15)'; }}
-                  onBlur={e => { if (!digit) { e.target.style.borderColor = 'rgba(255,255,255,0.1)'; } e.target.style.boxShadow = 'none'; }}
+                  onBlur={e => { if (!digit) { e.target.style.borderColor = '#cbd5e1'; } e.target.style.boxShadow = 'none'; }}
                   autoFocus={i === 0}
                 />
               ))}
@@ -233,14 +233,14 @@ const OTPVerify = () => {
           <div style={styles.steps}>
             {['Credentials', 'Verify OTP', 'Dashboard'].map((step, i) => (
               <div key={step} style={styles.stepItem}>
-                <div style={{ ...styles.stepDot, background: i === 1 ? '#3b82f6' : i < 1 ? 'rgba(16,185,129,0.6)' : 'rgba(255,255,255,0.1)', boxShadow: i === 1 ? '0 0 12px rgba(59,130,246,0.5)' : 'none' }}>
+                <div style={{ ...styles.stepDot, background: i === 1 ? '#3b82f6' : i < 1 ? '#10b981' : '#e2e8f0', boxShadow: i === 1 ? '0 0 12px rgba(59,130,246,0.5)' : 'none' }}>
                   {i < 1 ? (
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
                   ) : (
                     <span style={styles.stepNum}>{i + 1}</span>
                   )}
                 </div>
-                <span style={{ ...styles.stepLabel, color: i === 1 ? 'rgba(255,255,255,0.7)' : i < 1 ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.2)' }}>{step}</span>
+                <span style={{ ...styles.stepLabel, color: i === 1 ? '#475569' : i < 1 ? '#10b981' : '#94a3b8' }}>{step}</span>
                 {i < 2 && <div style={styles.stepLine} />}
               </div>
             ))}
@@ -261,21 +261,21 @@ const OTPVerify = () => {
 };
 
 const styles = {
-  page: { minHeight:'100vh', background:'linear-gradient(135deg, #080810 0%, #0d0d1f 50%, #080810 100%)', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Inter', system-ui, sans-serif", position:'relative', overflow:'hidden', padding:'20px' },
-  orb1: { position:'absolute', top:'-5%', right:'5%', width:'500px', height:'500px', borderRadius:'50%', background:'radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%)', animation:'float1 8s ease-in-out infinite', pointerEvents:'none' },
-  orb2: { position:'absolute', bottom:'-10%', left:'0%', width:'550px', height:'550px', borderRadius:'50%', background:'radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%)', animation:'float2 11s ease-in-out infinite', pointerEvents:'none' },
+  page: { minHeight:'100vh', background:'#f8fafc', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Inter', system-ui, sans-serif", position:'relative', overflow:'hidden', padding:'20px' },
+  orb1: { position:'absolute', top:'-10%', right:'-10%', width:'500px', height:'500px', borderRadius:'50%', background:'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%)', animation:'float1 8s ease-in-out infinite', pointerEvents:'none' },
+  orb2: { position:'absolute', bottom:'-15%', left:'-10%', width:'550px', height:'550px', borderRadius:'50%', background:'radial-gradient(circle, rgba(139,92,246,0.04) 0%, transparent 70%)', animation:'float2 11s ease-in-out infinite', pointerEvents:'none' },
   container: { width:'100%', maxWidth:'420px', display:'flex', flexDirection:'column', alignItems:'center', gap:'24px', position:'relative', zIndex:10 },
   logoWrap: { textAlign:'center' },
   logoIcon: { marginBottom:'10px', display:'flex', justifyContent:'center' },
-  logo: { fontSize:'28px', fontWeight:800, color:'#fff', letterSpacing:'3px', margin:0 },
-  logoAccent: { color:'#3b82f6' },
-  tagline: { color:'rgba(255,255,255,0.3)', fontSize:'13px', marginTop:'6px' },
-  card: { width:'100%', background:'rgba(255,255,255,0.03)', backdropFilter:'blur(24px)', WebkitBackdropFilter:'blur(24px)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'24px', padding:'36px 32px', boxShadow:'0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05)', display:'flex', flexDirection:'column', alignItems:'center' },
-  iconCircle: { width:'64px', height:'64px', borderRadius:'50%', background:'rgba(59,130,246,0.1)', border:'1px solid rgba(59,130,246,0.2)', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'20px' },
-  cardTitle: { fontSize:'22px', fontWeight:700, color:'#fff', margin:0, textAlign:'center' },
-  cardSub: { color:'rgba(255,255,255,0.35)', fontSize:'14px', marginTop:'8px', marginBottom:'28px', textAlign:'center', lineHeight:'1.6' },
-  emailHighlight: { color:'rgba(147,197,253,0.9)', fontWeight:600 },
-  errorBox: { width:'100%', background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.25)', color:'#fca5a5', borderRadius:'12px', padding:'12px 16px', fontSize:'13px', marginBottom:'20px', display:'flex', alignItems:'center', gap:'8px' },
+  logo: { fontSize:'28px', fontWeight:800, color:'#0f172a', letterSpacing:'3px', margin:0 },
+  logoAccent: { color:'#2563eb' },
+  tagline: { color:'#64748b', fontSize:'13px', marginTop:'6px' },
+  card: { width:'100%', background:'#ffffff', border:'1px solid #e2e8f0', borderRadius:'24px', padding:'36px 32px', boxShadow:'0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01)', display:'flex', flexDirection:'column', alignItems:'center' },
+  iconCircle: { width:'64px', height:'64px', borderRadius:'50%', background:'#eff6ff', border:'1px solid #bfdbfe', display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'20px' },
+  cardTitle: { fontSize:'22px', fontWeight:700, color:'#0f172a', margin:0, textAlign:'center' },
+  cardSub: { color:'#64748b', fontSize:'14px', marginTop:'8px', marginBottom:'28px', textAlign:'center', lineHeight:'1.6' },
+  emailHighlight: { color:'#2563eb', fontWeight:600 },
+  errorBox: { width:'100%', background:'#fef2f2', border:'1px solid #fecaca', color:'#ef4444', borderRadius:'12px', padding:'12px 16px', fontSize:'13px', marginBottom:'20px', display:'flex', alignItems:'center', gap:'8px' },
   digitRow: { display:'flex', gap:'10px', justifyContent:'center', marginBottom:'28px' },
   digitInput: {
     width:'48px', height:'56px', textAlign:'center',
@@ -284,19 +284,19 @@ const styles = {
     transition:'all 0.15s ease',
     fontFamily:"'Inter', sans-serif",
   },
-  btn: { width:'100%', background:'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)', color:'#fff', border:'none', borderRadius:'12px', padding:'15px', fontSize:'15px', fontWeight:600, transition:'all 0.2s ease', boxShadow:'0 4px 15px rgba(59,130,246,0.25)', fontFamily:"'Inter', sans-serif", cursor:'pointer' },
+  btn: { width:'100%', background:'linear-gradient(135deg, #2563eb 0%, #4f46e5 100%)', color:'#fff', border:'none', borderRadius:'12px', padding:'15px', fontSize:'15px', fontWeight:600, transition:'all 0.2s ease', boxShadow:'0 4px 12px rgba(59,130,246,0.25)', fontFamily:"'Inter', sans-serif", cursor:'pointer' },
   btnContent: { display:'flex', alignItems:'center', justifyContent:'center', gap:'8px' },
   spinner: { width:'15px', height:'15px', border:'2px solid rgba(255,255,255,0.3)', borderTop:'2px solid #fff', borderRadius:'50%', display:'inline-block', animation:'spin 0.8s linear infinite' },
   resendWrap: { display:'flex', alignItems:'center', gap:'8px', marginTop:'20px' },
-  resendText: { color:'rgba(255,255,255,0.3)', fontSize:'13px' },
-  cooldown: { color:'rgba(255,255,255,0.25)', fontSize:'13px', fontWeight:500 },
-  resendBtn: { background:'none', border:'none', color:'#60a5fa', fontSize:'13px', fontWeight:600, cursor:'pointer', padding:0, fontFamily:"'Inter', sans-serif" },
+  resendText: { color:'#64748b', fontSize:'13px' },
+  cooldown: { color:'#94a3b8', fontSize:'13px', fontWeight:500 },
+  resendBtn: { background:'none', border:'none', color:'#2563eb', fontSize:'13px', fontWeight:600, cursor:'pointer', padding:0, fontFamily:"'Inter', sans-serif" },
   steps: { display:'flex', alignItems:'center', marginTop:'28px' },
   stepItem: { display:'flex', alignItems:'center', gap:'8px' },
   stepDot: { width:'22px', height:'22px', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0 },
-  stepNum: { fontSize:'10px', color:'rgba(255,255,255,0.5)', fontWeight:600 },
+  stepNum: { fontSize:'10px', color:'#94a3b8', fontWeight:600 },
   stepLabel: { fontSize:'11px', fontWeight:500, whiteSpace:'nowrap' },
-  stepLine: { width:'24px', height:'1px', background:'rgba(255,255,255,0.1)', margin:'0 8px' },
+  stepLine: { width:'24px', height:'1px', background:'#e2e8f0', margin:'0 8px' },
 };
 
 export default OTPVerify;

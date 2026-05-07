@@ -77,10 +77,6 @@ const Navbar1 = () => {
 
         {/* Right: Desktop User & Logout */}
         <div className="desktop-only" style={styles.desktopUserBox}>
-          <span style={styles.userName}>
-            <UserCircle size={18} color="#3b82f6" />
-            {user.name?.split(' ')[0] || 'User'}
-          </span>
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -150,9 +146,6 @@ const Navbar1 = () => {
               >
                 <div style={styles.mobileUserRow}>
                   <UserCircle size={24} color="#3b82f6" />
-                  <span style={{ fontWeight: 700, fontSize: '18px', color: '#334155' }}>
-                    {user.name || 'User'}
-                  </span>
                 </div>
                 <button
                   onClick={() => { handleLogout(); toggleMenu(); }}
