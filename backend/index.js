@@ -27,6 +27,7 @@ const aiRoutes = require('./src/routes/ai');
 const leadRoutes = require('./src/routes/leads');
 const notesRoutes = require('./src/routes/notes')
 const dashboardRoutes = require('./src/routes/dashboard')
+const adminRoutes = require('./src/routes/admin')
 
 // Mount routes
 app.use('/api/auth', authRoutes);
@@ -34,6 +35,7 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/leads', leadRoutes);
 app.use('/api/notes', notesRoutes)
 app.use('/api/dashboard', dashboardRoutes)
+app.use('/api/admin', adminRoutes)
 
 // Health Check
 app.get('/health', (req, res) => {

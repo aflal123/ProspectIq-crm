@@ -91,7 +91,7 @@ const AIHub = () => {
                   <label style={S.label}>Select Lead</label>
                   <select value={leadId} onChange={e => setLeadId(e.target.value)} style={sel}>
                     <option value="">-- Choose a lead --</option>
-                    {leads.map(l => <option key={l.id} value={l.id}>{l.lead_name} — {l.company_name || 'No company'}</option>)}
+                    {leads.map(l => <option key={l.id} value={l.id}>{l.name} — {l.company_name || 'No company'}</option>)}
                   </select>
                 </div>
                 <div style={S.field}>
@@ -120,7 +120,7 @@ const AIHub = () => {
                   <label style={S.label}>Select Lead</label>
                   <select value={leadId} onChange={e => setLeadId(e.target.value)} style={sel}>
                     <option value="">-- Choose a lead --</option>
-                    {leads.map(l => <option key={l.id} value={l.id}>{l.lead_name} — {l.company_name || 'No company'}</option>)}
+                    {leads.map(l => <option key={l.id} value={l.id}>{l.name} — {l.company_name || 'No company'}</option>)}
                   </select>
                 </div>
                 <div style={S.field}>

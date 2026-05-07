@@ -31,7 +31,7 @@ const StatusBadge = ({ status }) => {
 };
 
 // ── Empty lead form ───────────────────────────────────────────
-const EMPTY = { lead_name:'', company_name:'', email:'', phone:'', lead_source:'website', status:'new', deal_value:'' };
+const EMPTY = { name:'', company_name:'', email:'', phone:'', lead_source:'website', status:'new', deal_value:'' };
 
 const SOURCES  = ['website','linkedin','referral','cold_email','event','other'];
 const STATUSES = ['new','contacted','qualified','proposal_sent','won','lost'];
@@ -49,8 +49,11 @@ const LeadModal = ({ lead, onClose, onSave }) => {
     e.preventDefault();
     setSaving(true); setErr('');
     try {
-      if (isEdit) await api.put(`/leads/${lead.id}`, form);
-      else        await api.post('/leads', form);
+      const payload = { ...form };
+      if (payload.deal_value === '') payload.deal_value = null;
+
+      if (isEdit) await api.put(`/leads/${lead.id}`, payload);
+      else        await api.post('/leads', payload);
       onSave();
     } catch (err) {
       setErr(err.response?.data?.message || 'Failed to save lead.');
@@ -72,8 +75,8 @@ const LeadModal = ({ lead, onClose, onSave }) => {
 
         <form onSubmit={submit} style={{ display:'flex', flexDirection:'column', gap:'14px' }}>
           <div style={styles.row2}>
-            <div><label style={labelStyle}>Lead Name *</label><input name="lead_name" value={form.lead_name} onChange={handle} required placeholder="Jane Smith" style={inputStyle}/></div>
-            <div><label style={labelStyle}>Company</label><input name="company_name" value={form.company_name} onChange={handle} placeholder="Acme Corp" style={inputStyle}/></div>
+            <div><label style={labelStyle}>Lead Name *</label><input name="name" value={form.name || ''} onChange={handle} required placeholder="Jane Smith" style={inputStyle}/></div>
+            <div><label style={labelStyle}>Company</label><input name="company_name" value={form.company_name || ''} onChange={handle} placeholder="Acme Corp" style={inputStyle}/></div>
           </div>
           <div style={styles.row2}>
             <div><label style={labelStyle}>Email</label><input type="email" name="email" value={form.email} onChange={handle} placeholder="jane@acme.com" style={inputStyle}/></div>

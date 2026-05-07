@@ -41,6 +41,7 @@ router.post('/', authMiddleware, async (req, res) => {
       name: finalName,                   // accept both lead_name and name
       assigned_to: req.user.id || null,  // track which user created this lead, fallback to null if token lacks id
     };
+    if (leadData.deal_value === '') leadData.deal_value = null;
 
     const { data, error } = await supabase
       .from('leads')
@@ -76,9 +77,12 @@ router.post('/', authMiddleware, async (req, res) => {
 router.put('/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
+    const payload = { ...req.body };
+    if (payload.deal_value === '') payload.deal_value = null;
+
     const { data, error } = await supabase
       .from('leads')
-      .update(req.body)
+      .update(payload)
       .eq('id', id)
       .select()
       .single();
