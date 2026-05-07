@@ -6,24 +6,28 @@ const sendOTPEmail = async (toEmail, otp) => {
   // 1. Primary Choice: BREVO API (Allows sending to anyone instantly)
   if (process.env.BREVO_API_KEY) {
     try {
-      await axios.post('https://api.brevo.com/v3/smtp/email', {
+      const response = await axios.post('https://api.brevo.com/v3/smtp/email', {
         sender: { name: "ProspectIQ", email: "ahamedaflal100@gmail.com" },
         to: [{ email: toEmail }],
         subject: "Your ProspectIQ Login OTP",
         htmlContent: `
-          <div style="font-family: Arial, sans-serif; padding: 20px;">
-            <h2>ProspectIQ</h2>
-            <p>Your login code is: <strong style="font-size: 24px;">${otp}</strong></p>
-            <p>This code will expire in 5 minutes.</p>
+          <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #eee; border-radius: 8px;">
+            <h2 style="color: #2563eb;">ProspectIQ</h2>
+            <p>Your login code is: <strong style="font-size: 28px; color: #000;">${otp}</strong></p>
+            <p style="color: #666;">This code will expire in 5 minutes.</p>
           </div>
         `
       }, {
-        headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' }
+        headers: { 
+          'api-key': process.env.BREVO_API_KEY,
+          'x-sib-api-key': process.env.BREVO_API_KEY,
+          'Content-Type': 'application/json' 
+        }
       });
-      console.log(`✅ Brevo: OTP sent to ${toEmail}`);
+      console.log(`✅ Brevo Success: OTP sent to ${toEmail}. MessageID: ${response.data.messageId}`);
       return;
     } catch (err) {
-      console.error('❌ Brevo failed:', err.response?.data?.message || err.message);
+      console.error('❌ Brevo API Error:', err.response?.data || err.message);
     }
   }
 
