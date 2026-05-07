@@ -18,6 +18,7 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'https://prospectiq.online',
+    'https://www.prospectiq.online',
     'https://prospect-iq-crm.vercel.app'
   ],
   credentials: true
