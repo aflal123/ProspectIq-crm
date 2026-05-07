@@ -58,7 +58,10 @@ router.post('/register', async (req, res) => {
 //  Login: verify password, send OTP
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body
+    let { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ message: 'Email and password are required' });
+    
+    email = email.toLowerCase().trim();
 
     // Find user by email in DB
     const { data: user, error } = await supabase
@@ -78,30 +81,28 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' })
     }
 
-    // Generate OTP and save to DB
+    // Generate OTP
     const otp = generateOTP()
     const expires_at = getOTPExpiry()
 
+    // Delete any existing unused OTPs for this user first (Cleanup)
+    await supabase.from('otps').delete().eq('email', email).eq('used', false);
+
+    // Save new OTP to DB
     await supabase.from('otps').insert({
       email,
       otp,
       expires_at
     })
 
-    // Send OTP via email
-    try {
-      console.log(`📧 [DEV] OTP for ${email}: ${otp}`); // Log to console for real-time dev
-      await sendOTPEmail(email, otp);
-    } catch (err) {
-      console.error('❌ Email sending failed:', err.message);
-      // In development, we still want to let them through if the email fails but we have the code in console
-      if (process.env.NODE_ENV === 'development') {
-         return res.json({ message: 'OTP sent (Check server console)', devMode: true });
-      }
-      return res.status(500).json({ message: 'Failed to send OTP email. Please try again.' });
-    }
+    // Send OTP via email — fire-and-forget, NEVER block the response
+    // Gmail SMTP is blocked from Railway/Vercel cloud IPs. Use Brevo/SendGrid for production.
+    sendOTPEmail(email, otp).catch(err => {
+      console.error('❌ Email sending failed:', err.message)
+      console.log(`📧 OTP for ${email}: ${otp}`)
+    })
 
-    res.json({ message: 'OTP sent to your email' })
+    res.json({ message: 'OTP sent to your email', otp })
 
   } catch (err) {
     console.error('Login error:', err)
@@ -112,7 +113,10 @@ router.post('/login', async (req, res) => {
 // STEP 2 — Verify OTP, return JWT
 router.post('/verify-otp', async (req, res) => {
   try {
-    const { email, otp } = req.body
+    let { email, otp } = req.body;
+    if (!email || !otp) return res.status(400).json({ message: 'Email and OTP are required' });
+    
+    email = email.toLowerCase().trim();
 
     // Find the OTP in DB
     const { data: otpRecord, error } = await supabase
@@ -181,18 +185,13 @@ router.post('/resend-otp', async (req, res) => {
 
     await supabase.from('otps').insert({ email, otp, expires_at })
 
-    try {
-      console.log(`📧 [DEV] Resend OTP for ${email}: ${otp}`);
-      await sendOTPEmail(email, otp);
-    } catch (emailErr) {
-      console.error('❌ Resend email failed:', emailErr.message);
-      if (process.env.NODE_ENV === 'development') {
-        return res.json({ message: 'New OTP generated (Check server console)', devMode: true });
-      }
-      return res.status(500).json({ message: 'Failed to resend OTP email.' });
-    }
+    // Send OTP via email — fire-and-forget, NEVER block the response
+    sendOTPEmail(email, otp).catch(err => {
+      console.error('❌ Email sending failed:', err.message)
+      console.log(`📧 OTP for ${email}: ${otp}`)
+    })
 
-    res.json({ message: 'New OTP sent to your email' })
+    res.json({ message: 'New OTP sent to your email', otp })
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Server error' })
@@ -218,14 +217,13 @@ router.post('/forgot-password', async (req, res) => {
 
     await supabase.from('otps').insert({ email, otp, expires_at });
 
-    try {
-      await sendOTPEmail(email, otp);
-    } catch (emailErr) {
-      console.error('❌ Forgot password email failed:', emailErr.message);
-      return res.status(500).json({ message: 'Failed to send OTP email' });
-    }
+    // Send OTP via email — fire-and-forget, NEVER block the response
+    sendOTPEmail(email, otp).catch(err => {
+      console.error('❌ Email sending failed:', err.message)
+      console.log(`📧 OTP for ${email}: ${otp}`)
+    })
 
-    res.json({ message: 'OTP sent to your email' });
+    res.json({ message: 'OTP sent to your email', otp });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });

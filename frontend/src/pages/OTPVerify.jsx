@@ -68,11 +68,21 @@ const OTPVerify = () => {
   // Handle paste — fill all 6 boxes at once
   const handlePaste = (e) => {
     e.preventDefault();
-    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
-    if (pasted.length === 6) {
-      setDigits(pasted.split(''));
-      inputRefs.current[5]?.focus();
-      submitOTP(pasted);
+    const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (pastedData) {
+      const newDigits = [...digits];
+      pastedData.split('').forEach((char, i) => {
+        if (i < 6) newDigits[i] = char;
+      });
+      setDigits(newDigits);
+      
+      // Focus the last filled box or the next empty one
+      const nextIndex = Math.min(pastedData.length, 5);
+      inputRefs.current[nextIndex]?.focus();
+
+      if (pastedData.length === 6) {
+        submitOTP(pastedData);
+      }
     }
   };
 
@@ -120,9 +130,9 @@ const OTPVerify = () => {
     }
   };
 
-  const maskedEmail = email
-    ? email.replace(/(.{2})(.*)(@.*)/, (_, a, b, c) => a + '*'.repeat(b.length) + c)
-    : '';
+  const maskedEmail = email && email.includes('@')
+    ? email.split('@')[0].slice(0, 2) + '****@' + email.split('@')[1]
+    : email || 'your email';
 
   return (
     <div style={styles.page}>
