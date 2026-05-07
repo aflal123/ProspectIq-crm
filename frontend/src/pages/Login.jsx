@@ -127,7 +127,10 @@ const Login = () => {
 
             {/* Password */}
             <div style={styles.fieldGroup}>
-              <label style={styles.label}>Password</label>
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                <label style={styles.label}>Password</label>
+                <Link to="/forgot-password" style={{ color:'#60a5fa', fontSize:'11px', textDecoration:'none', fontWeight:600 }}>Forgot Password?</Link>
+              </div>
               <div style={styles.inputWrap} onFocus={focusBorder} onBlur={blurBorder}>
                 <IconLock />
                 <input

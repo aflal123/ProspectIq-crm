@@ -5,6 +5,7 @@ import Register from './pages/Register';
 // ⬇️ We'll import more pages here as we build them
 import Login from './pages/Login';
 import OTPVerify from './pages/OTPVerify';
+import ForgotPassword from './pages/ForgotPassword';
 import Dashboard from './pages/Dashboard';
 import Leads from './pages/Leads';
 import LeadDetail from './pages/LeadDetail';
@@ -24,6 +25,7 @@ function App() {
         {/* Protected routes will go here */}
         <Route path="/login" element={<Login />} />
         <Route path="/verify-otp" element={<OTPVerify />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/leads" element={<ProtectedRoute><Leads /></ProtectedRoute>} />
         <Route path="/leads/:id" element={<ProtectedRoute><LeadDetail /></ProtectedRoute>} />

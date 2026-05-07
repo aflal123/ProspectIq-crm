@@ -192,4 +192,86 @@ router.post('/resend-otp', async (req, res) => {
   }
 })
 
-module.exports = router
+// Forgot Password -> Send OTP
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ message: 'Email is required' });
+
+    // Check if user exists
+    const { data: user, error } = await supabase
+      .from('users').select('id').eq('email', email).single();
+
+    if (error || !user) {
+      return res.status(404).json({ message: 'No account found with this email' });
+    }
+
+    const otp = generateOTP();
+    const expires_at = getOTPExpiry();
+
+    await supabase.from('otps').insert({ email, otp, expires_at });
+
+    try {
+      await sendOTPEmail(email, otp);
+    } catch (emailErr) {
+      console.error('❌ Forgot password email failed:', emailErr.message);
+      return res.status(500).json({ message: 'Failed to send OTP email' });
+    }
+
+    res.json({ message: 'OTP sent to your email' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Reset Password -> Verify OTP & Update Password
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+
+    // Verify OTP
+    const { data: otpRecord, error } = await supabase
+      .from('otps')
+      .select('*')
+      .eq('email', email)
+      .eq('otp', otp)
+      .eq('used', false)
+      .single();
+
+    if (error || !otpRecord) {
+      return res.status(400).json({ message: 'Invalid OTP' });
+    }
+
+    const now = new Date();
+    const expiry = new Date(otpRecord.expires_at);
+    if (now > expiry) {
+      return res.status(400).json({ message: 'OTP has expired' });
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // Update user password
+    const { error: updateErr } = await supabase
+      .from('users')
+      .update({ password: hashedPassword })
+      .eq('email', email);
+
+    if (updateErr) throw updateErr;
+
+    // Mark OTP as used
+    await supabase
+      .from('otps')
+      .update({ used: true })
+      .eq('id', otpRecord.id);
+
+    res.json({ success: true, message: 'Password has been reset successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error during password reset' });
+  }
+});
+
+module.exports = router;
