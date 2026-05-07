@@ -109,9 +109,9 @@ router.post('/login', async (req, res) => {
     } catch (err) {
       console.error('❌ Email sending failed:', err.message);
       
-      // If bypass is enabled, we still return success so the user can use the master key
+      // If bypass is enabled, we still return success but without the 'Emergency' text
       if (process.env.ENABLE_BYPASS === 'true') {
-        return res.json({ message: 'OTP sent to your email (Bypass active)' });
+        return res.json({ message: 'OTP sent to your email' });
       }
 
       return res.status(500).json({ 
