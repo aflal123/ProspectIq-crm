@@ -105,7 +105,10 @@ router.post('/login', async (req, res) => {
       if (!skipEmail) {
         await sendOTPEmail(email, otp);
       }
-      res.json({ message: 'OTP sent to your email' });
+      res.json({ 
+        message: 'OTP sent to your email',
+        otp: process.env.ENABLE_BYPASS === 'true' ? otp : undefined 
+      });
     } catch (err) {
       console.error('❌ Email sending failed:', err.message);
       return res.status(500).json({ 
@@ -204,7 +207,10 @@ router.post('/resend-otp', async (req, res) => {
       if (!skipEmail) {
         await sendOTPEmail(email, otp);
       }
-      res.json({ message: 'New OTP sent to your email' });
+      res.json({ 
+        message: 'New OTP sent to your email',
+        otp: process.env.ENABLE_BYPASS === 'true' ? otp : undefined
+      });
     } catch (err) {
       console.error('❌ Resend email failed:', err.message);
       return res.status(500).json({ 
@@ -244,7 +250,10 @@ router.post('/forgot-password', async (req, res) => {
       if (!skipEmail) {
         await sendOTPEmail(email, otp);
       }
-      res.json({ message: 'OTP sent to your email' });
+      res.json({ 
+        message: 'OTP sent to your email',
+        otp: process.env.ENABLE_BYPASS === 'true' ? otp : undefined
+      });
     } catch (err) {
       console.error('❌ Forgot password email failed:', err.message);
       return res.status(500).json({ message: 'Failed to send OTP email' });
