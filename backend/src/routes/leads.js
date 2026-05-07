@@ -84,8 +84,17 @@ router.post('/', authMiddleware, async (req, res) => {
 router.put('/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
-    const payload = { ...req.body };
-    if (payload.deal_value === '') payload.deal_value = null;
+    // Only accept actual DB columns — strip joined/virtual fields like 'users'
+    const {
+      name, company_name, email, phone,
+      lead_source, status, deal_value
+    } = req.body;
+
+    const payload = {
+      name, company_name, email, phone,
+      lead_source, status,
+      ...(deal_value !== undefined ? { deal_value: deal_value === '' ? null : deal_value } : {})
+    };
 
     const { data, error } = await supabase
       .from('leads')
