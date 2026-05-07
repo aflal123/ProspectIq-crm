@@ -28,6 +28,7 @@ const sendOTPEmail = async (toEmail, otp) => {
       return;
     } catch (err) {
       console.error('❌ Brevo API Error:', err.response?.data || err.message);
+      throw err; // Pass the error up for debugging
     }
   }
 

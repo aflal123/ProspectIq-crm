@@ -314,4 +314,24 @@ router.post('/reset-password', async (req, res) => {
   }
 });
 
+// Professional Mail Debug Route
+router.get('/test-email', async (req, res) => {
+  const testEmail = req.query.email || 'ahamedaflal100@gmail.com';
+  try {
+    console.log(`🧪 Starting professional mail test to ${testEmail}...`);
+    await sendOTPEmail(testEmail, '123456');
+    res.json({ 
+      success: true, 
+      message: `Test email accepted by provider for ${testEmail}. Check your inbox/spam.` 
+    });
+  } catch (err) {
+    console.error('❌ Professional Test Failed:', err.message);
+    res.status(500).json({ 
+      success: false, 
+      error: err.message,
+      details: err.response?.data || 'No extra details from provider'
+    });
+  }
+});
+
 module.exports = router;
