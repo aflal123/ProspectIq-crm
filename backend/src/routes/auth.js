@@ -325,4 +325,16 @@ router.get('/test-email', async (req, res) => {
   }
 });
 
+// Production Status Dashboard
+router.get('/status', (req, res) => {
+  res.json({
+    status: 'online',
+    resend_key_loaded: !!process.env.RESEND_API_KEY,
+    resend_key_length: process.env.RESEND_API_KEY?.trim().length || 0,
+    supabase_url_loaded: !!process.env.SUPABASE_URL,
+    enable_bypass: process.env.ENABLE_BYPASS,
+    node_env: process.env.NODE_ENV
+  });
+});
+
 module.exports = router;
