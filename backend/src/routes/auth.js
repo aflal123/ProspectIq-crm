@@ -97,10 +97,12 @@ router.post('/login', async (req, res) => {
     // Send OTP via email
     try {
       console.log(`📧 [DEV] OTP for ${email}: ${otp}`); 
-      // Professional Bypass check (e.g., for automated testing or emergency admin)
-      const shouldBypass = process.env.ENABLE_BYPASS === 'true' && (otp === '123456' || otp === '000000');
       
-      if (!shouldBypass) {
+      // Professional Bypass: If enabled, we skip real email sending at login
+      // so the user can proceed to the code screen and use the master key.
+      const skipEmail = process.env.ENABLE_BYPASS === 'true';
+      
+      if (!skipEmail) {
         await sendOTPEmail(email, otp);
       }
       res.json({ message: 'OTP sent to your email' });
@@ -198,7 +200,10 @@ router.post('/resend-otp', async (req, res) => {
     // Send OTP via email
     try {
       console.log(`📧 [DEV] Resend OTP for ${email}: ${otp}`);
-      await sendOTPEmail(email, otp);
+      const skipEmail = process.env.ENABLE_BYPASS === 'true';
+      if (!skipEmail) {
+        await sendOTPEmail(email, otp);
+      }
       res.json({ message: 'New OTP sent to your email' });
     } catch (err) {
       console.error('❌ Resend email failed:', err.message);
@@ -235,8 +240,8 @@ router.post('/forgot-password', async (req, res) => {
 
     // Send OTP via email
     try {
-      const shouldBypass = process.env.ENABLE_BYPASS === 'true' && (otp === '123456' || otp === '000000');
-      if (!shouldBypass) {
+      const skipEmail = process.env.ENABLE_BYPASS === 'true';
+      if (!skipEmail) {
         await sendOTPEmail(email, otp);
       }
       res.json({ message: 'OTP sent to your email' });
