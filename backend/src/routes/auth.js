@@ -335,9 +335,27 @@ router.get('/status', async (req, res) => {
     db_ok = false;
   }
 
+  // Test Resend
+  let resend_err = null;
+  try {
+    const rawKey = process.env.RESEND_API_KEY || '';
+    const cleanKey = rawKey.split('=')[0].split(' ')[0].trim();
+    const resend = new Resend(cleanKey);
+    const { error } = await resend.emails.send({
+      from: 'ProspectIQ <auth@contact.prospectiq.online>',
+      to: ['delivered@resend.dev'], // Official test address
+      subject: 'Test',
+      html: 'test'
+    });
+    resend_err = error ? error.message : null;
+  } catch (e) {
+    resend_err = e.message;
+  }
+
   res.json({
     status: 'online',
     db_connected: db_ok,
+    resend_error: resend_err,
     resend_key_length: (process.env.RESEND_API_KEY || '').split('=')[0].split(' ')[0].trim().length,
     node_env_clean: (process.env.NODE_ENV || '').split('=')[0].split(' ')[0].trim(),
     bypass_active: process.env.ENABLE_BYPASS === 'true'
