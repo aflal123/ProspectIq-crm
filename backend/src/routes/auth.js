@@ -159,4 +159,37 @@ router.post('/verify-otp', async (req, res) => {
   }
 })
 
+// Resend OTP
+router.post('/resend-otp', async (req, res) => {
+  try {
+    const { email } = req.body
+    if (!email) return res.status(400).json({ message: 'Email is required' })
+
+    // Check user exists
+    const { data: user, error } = await supabase
+      .from('users').select('id').eq('email', email).single()
+
+    if (error || !user) {
+      return res.status(404).json({ message: 'No account found with this email' })
+    }
+
+    const otp = generateOTP()
+    const expires_at = getOTPExpiry()
+
+    await supabase.from('otps').insert({ email, otp, expires_at })
+
+    try {
+      await sendOTPEmail(email, otp)
+    } catch (emailErr) {
+      console.error('❌ Resend email failed:', emailErr.message)
+      return res.status(500).json({ message: 'Failed to resend OTP email' })
+    }
+
+    res.json({ message: 'New OTP sent to your email' })
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ message: 'Server error' })
+  }
+})
+
 module.exports = router

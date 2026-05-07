@@ -48,7 +48,7 @@ const sendOTPEmail = async (toEmail, otp) => {
         <!-- Footer -->
         <div style="background-color: #F5F5F5; padding: 16px 32px; border-top: 1px solid #E5E5E5;">
           <p style="color: #999999; font-size: 11px; margin: 0; text-align: center;">
-            © 2024 ProspectIQ · All rights reserved
+            © 2026 ProspectIQ · All rights reserved
           </p>
         </div>
 
