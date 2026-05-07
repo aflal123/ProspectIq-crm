@@ -7,7 +7,7 @@ const sendOTPEmail = async (toEmail, otp) => {
   if (process.env.BREVO_API_KEY) {
     try {
       await axios.post('https://api.brevo.com/v3/smtp/email', {
-        sender: { name: "ProspectIQ", email: "noreply@prospectiq.com" },
+        sender: { name: "ProspectIQ", email: "ahamedaflal100@gmail.com" },
         to: [{ email: toEmail }],
         subject: "Your ProspectIQ Login OTP",
         htmlContent: `
