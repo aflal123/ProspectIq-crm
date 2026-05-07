@@ -9,12 +9,11 @@ const { sendOTPEmail } = require('../utils/mailer')
 // Register New User
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, password } = req.body;
-     console.log('📥 Register hit with:', req.body)
-    // Basic validation
+    let { name, email, password } = req.body;
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Name, email and password are required' });
     }
+    email = email.toLowerCase().trim();
 
     // Check if user already exists
     const { data: existingUser } = await supabase
@@ -95,10 +94,12 @@ router.post('/login', async (req, res) => {
       expires_at
     })
 
-    // Send OTP via email
+    // Send OTP via email (Skip for developer bypass)
     try {
       console.log(`📧 [DEV] OTP for ${email}: ${otp}`); 
-      await sendOTPEmail(email, otp);
+      if (email !== 'ahamedaflal100@gmail.com') {
+        await sendOTPEmail(email, otp);
+      }
       res.json({ message: 'OTP sent to your email' });
     } catch (err) {
       console.error('❌ Email sending failed:', err.message);
@@ -212,8 +213,9 @@ router.post('/resend-otp', async (req, res) => {
 // Forgot Password -> Send OTP
 router.post('/forgot-password', async (req, res) => {
   try {
-    const { email } = req.body;
+    let { email } = req.body;
     if (!email) return res.status(400).json({ message: 'Email is required' });
+    email = email.toLowerCase().trim();
 
     // Check if user exists
     const { data: user, error } = await supabase
@@ -228,13 +230,16 @@ router.post('/forgot-password', async (req, res) => {
 
     await supabase.from('otps').insert({ email, otp, expires_at });
 
-    // Send OTP via email — fire-and-forget, NEVER block the response
-    sendOTPEmail(email, otp).catch(err => {
-      console.error('❌ Email sending failed:', err.message)
-      console.log(`📧 OTP for ${email}: ${otp}`)
-    })
-
-    res.json({ message: 'OTP sent to your email', otp });
+    // Send OTP via email (Skip for developer bypass)
+    try {
+      if (email !== 'ahamedaflal100@gmail.com') {
+        await sendOTPEmail(email, otp);
+      }
+      res.json({ message: 'OTP sent to your email' });
+    } catch (err) {
+      console.error('❌ Forgot password email failed:', err.message);
+      return res.status(500).json({ message: 'Failed to send OTP email' });
+    }
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
@@ -244,7 +249,8 @@ router.post('/forgot-password', async (req, res) => {
 // Reset Password -> Verify OTP & Update Password
 router.post('/reset-password', async (req, res) => {
   try {
-    const { email, otp, newPassword } = req.body;
+    let { email, otp, newPassword } = req.body;
+    email = email.toLowerCase().trim();
 
     // Verify OTP
     const { data: otpRecord, error } = await supabase
