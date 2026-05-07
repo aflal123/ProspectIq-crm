@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import Leads from './pages/Leads';
 import LeadDetail from './pages/LeadDetail';
 import AIHub from './pages/AIHub';
+import AdminPortal from './pages/AdminPortal';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/leads" element={<ProtectedRoute><Leads /></ProtectedRoute>} />
         <Route path="/leads/:id" element={<ProtectedRoute><LeadDetail /></ProtectedRoute>} />
         <Route path="/ai" element={<ProtectedRoute><AIHub /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><AdminPortal /></ProtectedRoute>} />
 
         {/* 404 fallback */}
         <Route path="*" element={<Navigate to="/register" replace />} />

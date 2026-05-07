@@ -11,12 +11,12 @@ const IconNote  = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="no
 const IconStar  = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
 
 const STATUS_COLORS = {
-  new:           { bg:'rgba(139,92,246,0.15)', border:'rgba(139,92,246,0.3)', text:'#c084fc' },
-  contacted:     { bg:'rgba(59,130,246,0.15)',  border:'rgba(59,130,246,0.3)',  text:'#60a5fa' },
-  qualified:     { bg:'rgba(245,158,11,0.15)',  border:'rgba(245,158,11,0.3)',  text:'#fbbf24' },
-  proposal_sent: { bg:'rgba(6,182,212,0.15)',   border:'rgba(6,182,212,0.3)',   text:'#22d3ee' },
-  won:           { bg:'rgba(16,185,129,0.15)',  border:'rgba(16,185,129,0.3)',  text:'#34d399' },
-  lost:          { bg:'rgba(239,68,68,0.15)',   border:'rgba(239,68,68,0.3)',   text:'#f87171' },
+  new:           { bg:'#ede9fe', border:'#ddd6fe', text:'#7c3aed' },
+  contacted:     { bg:'#dbeafe', border:'#bfdbfe', text:'#2563eb' },
+  qualified:     { bg:'#fef3c7', border:'#fde68a', text:'#d97706' },
+  proposal_sent: { bg:'#cffafe', border:'#a5f3fc', text:'#0891b2' },
+  won:           { bg:'#d1fae5', border:'#a7f3d0', text:'#059669' },
+  lost:          { bg:'#fee2e2', border:'#fecaca', text:'#dc2626' },
 };
 
 const STATUSES = ['new','contacted','qualified','proposal_sent','won','lost'];
@@ -182,7 +182,7 @@ const LeadDetail = () => {
                     const active = lead.status === s;
                     return (
                       <button key={s} onClick={() => handleStatusChange(s)} disabled={savingStatus}
-                        style={{ ...styles.statusBtn, background: active ? c.bg : 'rgba(255,255,255,0.04)', border: `1px solid ${active ? c.border : 'rgba(255,255,255,0.08)'}`, color: active ? c.text : 'rgba(255,255,255,0.35)' }}>
+                        style={{ ...styles.statusBtn, background: active ? c.bg : '#ffffff', border: `1px solid ${active ? c.border : '#e2e8f0'}`, color: active ? c.text : '#64748b' }}>
                         {s.replace('_',' ')}
                       </button>
                     );
@@ -218,14 +218,14 @@ const LeadDetail = () => {
                   <div style={{ display:'flex', alignItems:'center', gap:'20px' }}>
                     <div style={{ ...styles.scoreRing, borderColor: scoreColor(ai.score) }}>
                       <span style={{ fontSize:'26px', fontWeight:800, color: scoreColor(ai.score) }}>{ai.score}</span>
-                      <span style={{ fontSize:'11px', color:'rgba(255,255,255,0.3)' }}>/100</span>
+                      <span style={{ fontSize:'11px', color:'#94a3b8' }}>/100</span>
                     </div>
                     <div>
-                      <p style={{ color:'#fff', fontSize:'14px', fontWeight:600, margin:'0 0 4px' }}>
+                      <p style={{ color:'#0f172a', fontSize:'15px', fontWeight:700, margin:'0 0 4px' }}>
                         {ai.score >= 75 ? '🔥 Hot Lead' : ai.score >= 50 ? '⚡ Warm Lead' : '❄️ Cold Lead'}
                       </p>
                       {ai.recommendedAction && (
-                        <p style={{ color:'rgba(255,255,255,0.45)', fontSize:'12px', margin:0 }}>{ai.recommendedAction}</p>
+                        <p style={{ color:'#64748b', fontSize:'13px', margin:0, fontWeight: 500 }}>{ai.recommendedAction}</p>
                       )}
                     </div>
                   </div>
@@ -239,8 +239,8 @@ const LeadDetail = () => {
                       <p style={styles.secLabel}>Strengths</p>
                       {ai.strengths.map((s,i) => (
                         <div key={i} style={styles.aiPoint}>
-                          <span style={{ color:'#34d399' }}><IconStar /></span>
-                          <span style={{ color:'rgba(255,255,255,0.6)', fontSize:'13px' }}>{s}</span>
+                          <span style={{ color:'#10b981' }}><IconStar /></span>
+                          <span style={{ color:'#475569', fontSize:'14px', fontWeight: 500 }}>{s}</span>
                         </div>
                       ))}
                     </div>
@@ -251,8 +251,8 @@ const LeadDetail = () => {
                       <p style={styles.secLabel}>Risks</p>
                       {ai.risks.map((r,i) => (
                         <div key={i} style={styles.aiPoint}>
-                          <span style={{ color:'#f87171', fontSize:'12px' }}>▲</span>
-                          <span style={{ color:'rgba(255,255,255,0.6)', fontSize:'13px' }}>{r}</span>
+                          <span style={{ color:'#ef4444', fontSize:'12px' }}>▲</span>
+                          <span style={{ color:'#475569', fontSize:'14px', fontWeight: 500 }}>{r}</span>
                         </div>
                       ))}
                     </div>
@@ -261,7 +261,7 @@ const LeadDetail = () => {
               )}
 
               {!ai && !scoringAI && (
-                <p style={{ color:'rgba(255,255,255,0.25)', fontSize:'13px', marginTop:'12px' }}>
+                <p style={{ color:'#94a3b8', fontSize:'14px', marginTop:'12px', fontWeight: 500 }}>
                   Click "Score with AI" to analyse this lead using GPT-4o mini.
                 </p>
               )}
@@ -322,54 +322,54 @@ const LeadDetail = () => {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
         @keyframes spin { to{transform:rotate(360deg)} }
-        textarea::placeholder { color:rgba(255,255,255,0.18); }
-        textarea:focus { outline:none; border-color:#3b82f6 !important; }
+        textarea::placeholder { color:#94a3b8; }
+        textarea:focus { outline:none; border-color:#3b82f6 !important; box-shadow:0 0 0 2px rgba(59,130,246,0.1); }
       `}</style>
     </div>
   );
 };
 
 const styles = {
-  page:       { minHeight:'100vh', background:'linear-gradient(160deg,#08080f,#0c0c1a)', fontFamily:"'Inter',system-ui,sans-serif" },
+  page:       { minHeight:'100vh', background:'#f8fafc', fontFamily:"'Inter',system-ui,sans-serif" },
   body:       { maxWidth:'1200px', margin:'0 auto', padding:'32px 24px' },
   topBar:     { marginBottom:'24px' },
-  backBtn:    { display:'flex', alignItems:'center', gap:'8px', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.5)', borderRadius:'10px', padding:'8px 14px', fontSize:'13px', fontWeight:500, cursor:'pointer', fontFamily:"'Inter',sans-serif", transition:'color 0.15s' },
-  errBox:     { background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.2)', color:'#fca5a5', borderRadius:'12px', padding:'14px 18px', fontSize:'14px', marginBottom:'20px' },
+  backBtn:    { display:'flex', alignItems:'center', gap:'8px', background:'#ffffff', border:'1px solid #e2e8f0', color:'#475569', borderRadius:'10px', padding:'8px 14px', fontSize:'13px', fontWeight:600, cursor:'pointer', fontFamily:"'Inter',sans-serif", transition:'all 0.15s', boxShadow:'0 1px 2px rgba(0,0,0,0.05)' },
+  errBox:     { background:'#fef2f2', border:'1px solid #fecaca', color:'#ef4444', borderRadius:'12px', padding:'14px 18px', fontSize:'14px', marginBottom:'20px', fontWeight: 500 },
   grid:       { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px', alignItems:'start' },
-  panel:      { background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'20px', padding:'28px' },
+  panel:      { background:'#ffffff', border:'1px solid #e2e8f0', borderRadius:'20px', padding:'28px', boxShadow:'0 4px 6px -1px rgba(0,0,0,0.05)' },
   leadHeader: { display:'flex', alignItems:'center', gap:'16px', marginBottom:'24px' },
-  bigAvatar:  { width:'56px', height:'56px', borderRadius:'16px', background:'linear-gradient(135deg,#2563eb,#4f46e5)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'22px', fontWeight:800, color:'#fff', flexShrink:0 },
-  leadName:   { fontSize:'22px', fontWeight:800, color:'#fff', margin:0, letterSpacing:'-0.3px' },
-  leadCompany:{ color:'rgba(255,255,255,0.4)', fontSize:'14px', margin:'4px 0 0' },
+  bigAvatar:  { width:'56px', height:'56px', borderRadius:'16px', background:'linear-gradient(135deg,#2563eb,#4f46e5)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'22px', fontWeight:800, color:'#fff', flexShrink:0, boxShadow:'0 4px 12px rgba(37,99,235,0.25)' },
+  leadName:   { fontSize:'24px', fontWeight:800, color:'#0f172a', margin:0, letterSpacing:'-0.3px' },
+  leadCompany:{ color:'#64748b', fontSize:'15px', margin:'4px 0 0', fontWeight: 500 },
   infoGrid:   { display:'flex', flexDirection:'column', gap:'0' },
-  infoRow:    { display:'flex', justifyContent:'space-between', alignItems:'center', padding:'11px 0', borderBottom:'1px solid rgba(255,255,255,0.05)' },
-  infoLabel:  { fontSize:'12px', color:'rgba(255,255,255,0.35)', fontWeight:500 },
-  infoVal:    { fontSize:'13px', color:'rgba(255,255,255,0.75)', fontWeight:500 },
-  secLabel:   { fontSize:'11px', fontWeight:600, color:'rgba(255,255,255,0.35)', letterSpacing:'0.6px', textTransform:'uppercase', margin:'0 0 10px' },
-  statusRow:  { display:'flex', flexWrap:'wrap', gap:'6px' },
-  statusBtn:  { borderRadius:'8px', padding:'6px 12px', fontSize:'12px', fontWeight:600, cursor:'pointer', textTransform:'capitalize', fontFamily:"'Inter',sans-serif", transition:'all 0.15s' },
+  infoRow:    { display:'flex', justifyContent:'space-between', alignItems:'center', padding:'11px 0', borderBottom:'1px solid #f1f5f9' },
+  infoLabel:  { fontSize:'13px', color:'#64748b', fontWeight:600 },
+  infoVal:    { fontSize:'14px', color:'#0f172a', fontWeight:700 },
+  secLabel:   { fontSize:'12px', fontWeight:700, color:'#475569', letterSpacing:'0.6px', textTransform:'uppercase', margin:'0 0 10px' },
+  statusRow:  { display:'flex', flexWrap:'wrap', gap:'8px' },
+  statusBtn:  { borderRadius:'8px', padding:'8px 14px', fontSize:'13px', fontWeight:600, cursor:'pointer', textTransform:'capitalize', fontFamily:"'Inter',sans-serif", transition:'all 0.15s', boxShadow:'0 1px 2px rgba(0,0,0,0.02)' },
   panelHead:  { display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'20px' },
-  panelTitle: { fontSize:'16px', fontWeight:700, color:'#fff', margin:0 },
-  aiBtn:      { display:'flex', alignItems:'center', gap:'6px', background:'rgba(139,92,246,0.1)', border:'1px solid rgba(139,92,246,0.25)', color:'#c084fc', borderRadius:'10px', padding:'8px 14px', fontSize:'13px', fontWeight:600, cursor:'pointer', fontFamily:"'Inter',sans-serif", transition:'background 0.15s' },
+  panelTitle: { fontSize:'18px', fontWeight:800, color:'#0f172a', margin:0 },
+  aiBtn:      { display:'flex', alignItems:'center', gap:'6px', background:'#f3e8ff', border:'1px solid #e9d5ff', color:'#7e22ce', borderRadius:'10px', padding:'8px 14px', fontSize:'13px', fontWeight:700, cursor:'pointer', fontFamily:"'Inter',sans-serif", transition:'all 0.15s', boxShadow:'0 1px 2px rgba(0,0,0,0.05)' },
   aiLoading:  { display:'flex', flexDirection:'column', alignItems:'center', gap:'12px', padding:'24px 0' },
-  scoreRing:  { width:'76px', height:'76px', borderRadius:'50%', border:'3px solid', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', flexShrink:0 },
-  reasoning:  { background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'10px', padding:'12px 14px', fontSize:'13px', color:'rgba(255,255,255,0.5)', lineHeight:'1.6' },
-  aiPoint:    { display:'flex', alignItems:'flex-start', gap:'8px', marginBottom:'6px' },
-  noteCount:  { background:'rgba(255,255,255,0.07)', borderRadius:'20px', padding:'3px 10px', fontSize:'12px', color:'rgba(255,255,255,0.4)', fontWeight:600 },
-  notesList:  { display:'flex', flexDirection:'column', gap:'10px', maxHeight:'380px', overflowY:'auto', marginBottom:'16px', paddingRight:'4px' },
-  noteCard:   { background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'12px', padding:'14px' },
+  scoreRing:  { width:'76px', height:'76px', borderRadius:'50%', border:'4px solid', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', flexShrink:0 },
+  reasoning:  { background:'#f8fafc', border:'1px solid #e2e8f0', borderRadius:'10px', padding:'16px', fontSize:'14px', color:'#334155', lineHeight:'1.7', fontWeight: 500 },
+  aiPoint:    { display:'flex', alignItems:'flex-start', gap:'8px', marginBottom:'8px' },
+  noteCount:  { background:'#f1f5f9', borderRadius:'20px', padding:'4px 12px', fontSize:'12px', color:'#475569', fontWeight:700 },
+  notesList:  { display:'flex', flexDirection:'column', gap:'12px', maxHeight:'380px', overflowY:'auto', marginBottom:'16px', paddingRight:'8px' },
+  noteCard:   { background:'#ffffff', border:'1px solid #e2e8f0', borderRadius:'12px', padding:'16px', boxShadow:'0 1px 3px rgba(0,0,0,0.05)' },
   noteTop:    { display:'flex', justifyContent:'space-between', marginBottom:'8px' },
-  noteAuthor: { fontSize:'12px', fontWeight:600, color:'#60a5fa' },
-  noteTime:   { fontSize:'11px', color:'rgba(255,255,255,0.25)' },
-  noteContent:{ fontSize:'14px', color:'rgba(255,255,255,0.65)', lineHeight:'1.6', margin:0 },
-  emptyNotes: { display:'flex', flexDirection:'column', alignItems:'center', gap:'8px', padding:'40px 0', color:'rgba(255,255,255,0.2)', fontSize:'13px' },
-  noteForm:   { display:'flex', flexDirection:'column', gap:'10px', borderTop:'1px solid rgba(255,255,255,0.06)', paddingTop:'16px' },
-  noteInput:  { background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'12px', padding:'12px 14px', color:'#fff', fontSize:'14px', resize:'vertical', fontFamily:"'Inter',sans-serif", lineHeight:'1.6', transition:'border-color 0.2s' },
-  sendBtn:    { display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', background:'linear-gradient(135deg,#2563eb,#4f46e5)', border:'none', color:'#fff', borderRadius:'10px', padding:'11px', fontSize:'14px', fontWeight:600, cursor:'pointer', fontFamily:"'Inter',sans-serif" },
+  noteAuthor: { fontSize:'13px', fontWeight:700, color:'#2563eb' },
+  noteTime:   { fontSize:'12px', color:'#94a3b8', fontWeight: 500 },
+  noteContent:{ fontSize:'14px', color:'#334155', lineHeight:'1.7', margin:0, fontWeight: 500 },
+  emptyNotes: { display:'flex', flexDirection:'column', alignItems:'center', gap:'8px', padding:'40px 0', color:'#94a3b8', fontSize:'14px', fontWeight: 500 },
+  noteForm:   { display:'flex', flexDirection:'column', gap:'12px', borderTop:'1px solid #e2e8f0', paddingTop:'20px' },
+  noteInput:  { background:'#ffffff', border:'1px solid #cbd5e1', borderRadius:'12px', padding:'14px', color:'#0f172a', fontSize:'14px', resize:'vertical', fontFamily:"'Inter',sans-serif", lineHeight:'1.6', transition:'border-color 0.2s', outline:'none' },
+  sendBtn:    { display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', background:'linear-gradient(135deg,#2563eb,#4f46e5)', border:'none', color:'#fff', borderRadius:'10px', padding:'12px', fontSize:'14px', fontWeight:600, cursor:'pointer', fontFamily:"'Inter',sans-serif", boxShadow:'0 4px 12px rgba(59,130,246,0.25)' },
   centered:   { display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'200px', gap:'14px' },
-  spinner:    { width:'36px', height:'36px', border:'3px solid rgba(255,255,255,0.07)', borderTop:'3px solid #3b82f6', borderRadius:'50%', animation:'spin 0.8s linear infinite' },
-  miniSpinner:{ width:'13px', height:'13px', border:'2px solid rgba(255,255,255,0.3)', borderTop:'2px solid #fff', borderRadius:'50%', display:'inline-block', animation:'spin 0.8s linear infinite', marginRight:'6px' },
-  loadTxt:    { color:'rgba(255,255,255,0.3)', fontSize:'14px' },
+  spinner:    { width:'36px', height:'36px', border:'3px solid #e2e8f0', borderTop:'3px solid #3b82f6', borderRadius:'50%', animation:'spin 0.8s linear infinite' },
+  miniSpinner:{ width:'14px', height:'14px', border:'2px solid rgba(59,130,246,0.3)', borderTop:'2px solid #3b82f6', borderRadius:'50%', display:'inline-block', animation:'spin 0.8s linear infinite', marginRight:'6px' },
+  loadTxt:    { color:'#64748b', fontSize:'14px', fontWeight: 500 },
 };
 
 export default LeadDetail;

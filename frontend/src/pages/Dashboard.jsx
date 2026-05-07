@@ -67,7 +67,7 @@ const PipelineBar = ({ label, count, total, color }) => {
     <div style={styles.pipelineRow}>
       <div style={styles.pipelineMeta}>
         <span style={styles.pipelineLabel}>{label}</span>
-        <span style={styles.pipelineCount}>{count} <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '11px' }}>({pct}%)</span></span>
+        <span style={styles.pipelineCount}>{count} <span style={{ color: '#94a3b8', fontSize: '11px', fontWeight: 500 }}>({pct}%)</span></span>
       </div>
       <div style={styles.pipelineTrack}>
         <div style={{ ...styles.pipelineFill, width: `${pct}%`, background: color }} />
@@ -126,7 +126,7 @@ const Dashboard = () => {
         {/* Header */}
         <div style={styles.header}>
           <div>
-            <p style={styles.greeting}>{getGreeting()}, {user.name?.split(' ')[0] || 'there'} 👋</p>
+            <p style={styles.greeting}>{getGreeting()}, {user.name?.split(' ')[0] || 'there'}</p>
             <h1 style={styles.pageTitle}>Sales Dashboard</h1>
             <p style={styles.pageSub}>Your pipeline at a glance</p>
           </div>
@@ -161,12 +161,12 @@ const Dashboard = () => {
           <>
             {/* KPI Cards */}
             <div style={styles.cardsGrid}>
-              <StatCard icon={<IconUsers />}   label="Total Leads"    value={stats.totalLeads}        sub="All time"             color={{ bg:'rgba(59,130,246,0.08)',  border:'rgba(59,130,246,0.2)',  icon:'#60a5fa', value:'#fff' }}    delay="0ms" />
-              <StatCard icon={<IconStar />}    label="New Leads"      value={stats.newLeads}           sub="Awaiting contact"     color={{ bg:'rgba(168,85,247,0.08)', border:'rgba(168,85,247,0.2)', icon:'#c084fc', value:'#fff' }}    delay="60ms" />
-              <StatCard icon={<IconTarget />}  label="Qualified"      value={stats.qualifiedLeads}     sub="Ready to pitch"       color={{ bg:'rgba(245,158,11,0.08)', border:'rgba(245,158,11,0.2)', icon:'#fbbf24', value:'#fff' }}    delay="120ms" />
-              <StatCard icon={<IconTrendUp />} label="Won Deals"      value={stats.wonLeads}           sub={`${winRate}% win rate`} color={{ bg:'rgba(16,185,129,0.08)', border:'rgba(16,185,129,0.2)', icon:'#34d399', value:'#34d399' }} delay="180ms" />
-              <StatCard icon={<IconX />}       label="Lost Deals"     value={stats.lostLeads}          sub="Closed lost"          color={{ bg:'rgba(239,68,68,0.08)',  border:'rgba(239,68,68,0.2)',  icon:'#f87171', value:'#f87171' }}  delay="240ms" />
-              <StatCard icon={<IconDollar />}  label="Total Pipeline" value={fmt(stats.totalDealValue)} sub="Potential revenue"   color={{ bg:'rgba(59,130,246,0.08)',  border:'rgba(59,130,246,0.2)',  icon:'#60a5fa', value:'#fff' }}    delay="300ms" />
+              <StatCard icon={<IconUsers />}   label="Total Leads"    value={stats.totalLeads}        sub="All time"             color={{ bg:'rgba(59,130,246,0.1)',  border:'rgba(59,130,246,0.2)',  icon:'#3b82f6', value:'#0f172a' }}    delay="0ms" />
+              <StatCard icon={<IconStar />}    label="New Leads"      value={stats.newLeads}           sub="Awaiting contact"     color={{ bg:'rgba(168,85,247,0.1)', border:'rgba(168,85,247,0.2)', icon:'#a855f7', value:'#0f172a' }}    delay="60ms" />
+              <StatCard icon={<IconTarget />}  label="Qualified"      value={stats.qualifiedLeads}     sub="Ready to pitch"       color={{ bg:'rgba(245,158,11,0.1)', border:'rgba(245,158,11,0.2)', icon:'#f59e0b', value:'#0f172a' }}    delay="120ms" />
+              <StatCard icon={<IconTrendUp />} label="Won Deals"      value={stats.wonLeads}           sub={`${winRate}% win rate`} color={{ bg:'rgba(16,185,129,0.1)', border:'rgba(16,185,129,0.2)', icon:'#10b981', value:'#10b981' }} delay="180ms" />
+              <StatCard icon={<IconX />}       label="Lost Deals"     value={stats.lostLeads}          sub="Closed lost"          color={{ bg:'rgba(239,68,68,0.1)',  border:'rgba(239,68,68,0.2)',  icon:'#ef4444', value:'#ef4444' }}  delay="240ms" />
+              <StatCard icon={<IconDollar />}  label="Total Pipeline" value={fmt(stats.totalDealValue)} sub="Potential revenue"   color={{ bg:'rgba(59,130,246,0.1)',  border:'rgba(59,130,246,0.2)',  icon:'#3b82f6', value:'#0f172a' }}    delay="300ms" />
             </div>
 
             {/* Bottom section */}
@@ -210,8 +210,8 @@ const Dashboard = () => {
                 <button
                   onClick={() => navigate('/leads')}
                   style={styles.ctaBtn}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'rgba(59,130,246,0.15)'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'rgba(59,130,246,0.08)'; }}
+                  onMouseEnter={e => { e.currentTarget.style.background = '#dcfce7'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = '#f0fdf4'; }}
                 >
                   View All Leads <IconArrow />
                 </button>
@@ -232,41 +232,41 @@ const Dashboard = () => {
 };
 
 const styles = {
-  page: { minHeight:'100vh', background:'linear-gradient(160deg, #08080f 0%, #0c0c1a 100%)', fontFamily:"'Inter', system-ui, sans-serif" },
+  page: { minHeight:'100vh', background:'#f8fafc', fontFamily:"'Inter', system-ui, sans-serif" },
   pageBody: { maxWidth:'1200px', margin:'0 auto', padding:'40px 24px' },
   header: { display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:'36px', flexWrap:'wrap', gap:'16px' },
-  greeting: { color:'rgba(255,255,255,0.4)', fontSize:'13px', marginBottom:'6px' },
-  pageTitle: { fontSize:'28px', fontWeight:800, color:'#fff', margin:0, letterSpacing:'-0.5px' },
-  pageSub: { color:'rgba(255,255,255,0.3)', fontSize:'14px', marginTop:'4px' },
-  addBtn: { display:'flex', alignItems:'center', gap:'8px', background:'linear-gradient(135deg,#2563eb,#4f46e5)', color:'#fff', border:'none', borderRadius:'12px', padding:'12px 20px', fontSize:'14px', fontWeight:600, cursor:'pointer', transition:'all 0.2s ease', boxShadow:'0 4px 12px rgba(59,130,246,0.25)', fontFamily:"'Inter', sans-serif" },
+  greeting: { color:'#64748b', fontSize:'14px', marginBottom:'6px', fontWeight: 500 },
+  pageTitle: { fontSize:'30px', fontWeight:800, color:'#0f172a', margin:0, letterSpacing:'-0.5px' },
+  pageSub: { color:'#64748b', fontSize:'15px', marginTop:'4px' },
+  addBtn: { display:'flex', alignItems:'center', gap:'8px', background:'linear-gradient(135deg,#2563eb,#4f46e5)', color:'#fff', border:'none', borderRadius:'10px', padding:'12px 20px', fontSize:'14px', fontWeight:600, cursor:'pointer', transition:'all 0.2s ease', boxShadow:'0 4px 12px rgba(59,130,246,0.25)', fontFamily:"'Inter', sans-serif" },
   cardsGrid: { display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(180px, 1fr))', gap:'16px', marginBottom:'24px' },
-  card: { background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'16px', padding:'20px', display:'flex', flexDirection:'column', gap:'16px', transition:'border-color 0.2s, transform 0.2s', cursor:'default' },
+  card: { background:'#ffffff', border:'1px solid #e2e8f0', borderRadius:'16px', padding:'20px', display:'flex', flexDirection:'column', gap:'16px', transition:'border-color 0.2s, transform 0.2s, box-shadow 0.2s', cursor:'default', boxShadow:'0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' },
   cardIconWrap: { width:'44px', height:'44px', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center' },
   cardBody: { display:'flex', flexDirection:'column', gap:'2px' },
-  cardLabel: { fontSize:'11px', fontWeight:600, color:'rgba(255,255,255,0.35)', textTransform:'uppercase', letterSpacing:'0.6px', margin:0 },
-  cardValue: { fontSize:'28px', fontWeight:800, color:'#fff', margin:'4px 0 0 0', letterSpacing:'-0.5px' },
-  cardSub: { fontSize:'11px', color:'rgba(255,255,255,0.25)', margin:0 },
+  cardLabel: { fontSize:'11px', fontWeight:700, color:'#64748b', textTransform:'uppercase', letterSpacing:'0.6px', margin:0 },
+  cardValue: { fontSize:'28px', fontWeight:800, color:'#0f172a', margin:'4px 0 0 0', letterSpacing:'-0.5px' },
+  cardSub: { fontSize:'12px', color:'#94a3b8', margin:0, fontWeight: 500 },
   bottomGrid: { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px' },
-  panel: { background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'20px', padding:'28px' },
+  panel: { background:'#ffffff', border:'1px solid #e2e8f0', borderRadius:'20px', padding:'28px', boxShadow:'0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)' },
   panelHeader: { display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'24px' },
-  panelTitle: { fontSize:'16px', fontWeight:700, color:'#fff', margin:0 },
-  panelSub: { fontSize:'12px', color:'rgba(255,255,255,0.3)' },
+  panelTitle: { fontSize:'18px', fontWeight:700, color:'#0f172a', margin:0 },
+  panelSub: { fontSize:'13px', color:'#64748b', fontWeight: 500 },
   pipelineList: { display:'flex', flexDirection:'column', gap:'14px' },
   pipelineRow: { display:'flex', flexDirection:'column', gap:'6px' },
   pipelineMeta: { display:'flex', justifyContent:'space-between', alignItems:'center' },
-  pipelineLabel: { fontSize:'12px', color:'rgba(255,255,255,0.5)', fontWeight:500 },
-  pipelineCount: { fontSize:'13px', color:'rgba(255,255,255,0.7)', fontWeight:600 },
-  pipelineTrack: { height:'6px', background:'rgba(255,255,255,0.06)', borderRadius:'99px', overflow:'hidden' },
+  pipelineLabel: { fontSize:'13px', color:'#475569', fontWeight:600 },
+  pipelineCount: { fontSize:'14px', color:'#0f172a', fontWeight:700 },
+  pipelineTrack: { height:'8px', background:'#f1f5f9', borderRadius:'99px', overflow:'hidden' },
   pipelineFill: { height:'100%', borderRadius:'99px', transition:'width 0.8s ease' },
   revenueList: { display:'flex', flexDirection:'column', gap:'0' },
-  revenueRow: { display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 0', borderBottom:'1px solid rgba(255,255,255,0.05)' },
-  revenueLabel: { fontSize:'13px', color:'rgba(255,255,255,0.45)' },
+  revenueRow: { display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 0', borderBottom:'1px solid #f1f5f9' },
+  revenueLabel: { fontSize:'14px', color:'#475569', fontWeight: 500 },
   revenueValue: { fontSize:'16px', fontWeight:700 },
-  ctaBtn: { display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', width:'100%', marginTop:'20px', background:'rgba(59,130,246,0.08)', border:'1px solid rgba(59,130,246,0.2)', color:'#60a5fa', borderRadius:'12px', padding:'12px', fontSize:'14px', fontWeight:600, cursor:'pointer', transition:'background 0.2s', fontFamily:"'Inter', sans-serif" },
+  ctaBtn: { display:'flex', alignItems:'center', justifyContent:'center', gap:'8px', width:'100%', marginTop:'20px', background:'#f0fdf4', border:'1px solid #bbf7d0', color:'#166534', borderRadius:'12px', padding:'12px', fontSize:'14px', fontWeight:600, cursor:'pointer', transition:'background 0.2s', fontFamily:"'Inter', sans-serif" },
   centered: { display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'300px', gap:'16px' },
-  bigSpinner: { width:'40px', height:'40px', border:'3px solid rgba(255,255,255,0.08)', borderTop:'3px solid #3b82f6', borderRadius:'50%', animation:'spin 0.9s linear infinite' },
-  loadingText: { color:'rgba(255,255,255,0.3)', fontSize:'14px' },
-  errorBox: { background:'rgba(239,68,68,0.08)', border:'1px solid rgba(239,68,68,0.2)', color:'#fca5a5', borderRadius:'14px', padding:'16px 20px', fontSize:'14px', display:'flex', alignItems:'center', gap:'10px' },
+  bigSpinner: { width:'40px', height:'40px', border:'3px solid #e2e8f0', borderTop:'3px solid #3b82f6', borderRadius:'50%', animation:'spin 0.9s linear infinite' },
+  loadingText: { color:'#64748b', fontSize:'14px', fontWeight: 500 },
+  errorBox: { background:'#fef2f2', border:'1px solid #fecaca', color:'#ef4444', borderRadius:'14px', padding:'16px 20px', fontSize:'14px', display:'flex', alignItems:'center', gap:'10px', fontWeight: 500 },
 };
 
 export default Dashboard;

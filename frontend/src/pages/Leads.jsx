@@ -13,18 +13,18 @@ const IconClose   = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="
 
 // ── Status badge colours ──────────────────────────────────────
 const STATUS_COLORS = {
-  new:           { bg:'rgba(139,92,246,0.15)', border:'rgba(139,92,246,0.3)', text:'#c084fc' },
-  contacted:     { bg:'rgba(59,130,246,0.15)',  border:'rgba(59,130,246,0.3)',  text:'#60a5fa' },
-  qualified:     { bg:'rgba(245,158,11,0.15)',  border:'rgba(245,158,11,0.3)',  text:'#fbbf24' },
-  proposal_sent: { bg:'rgba(6,182,212,0.15)',   border:'rgba(6,182,212,0.3)',   text:'#22d3ee' },
-  won:           { bg:'rgba(16,185,129,0.15)',  border:'rgba(16,185,129,0.3)',  text:'#34d399' },
-  lost:          { bg:'rgba(239,68,68,0.15)',   border:'rgba(239,68,68,0.3)',   text:'#f87171' },
+  new:           { bg:'#ede9fe', border:'#ddd6fe', text:'#7c3aed' },
+  contacted:     { bg:'#dbeafe', border:'#bfdbfe', text:'#2563eb' },
+  qualified:     { bg:'#fef3c7', border:'#fde68a', text:'#d97706' },
+  proposal_sent: { bg:'#cffafe', border:'#a5f3fc', text:'#0891b2' },
+  won:           { bg:'#d1fae5', border:'#a7f3d0', text:'#059669' },
+  lost:          { bg:'#fee2e2', border:'#fecaca', text:'#dc2626' },
 };
 
 const StatusBadge = ({ status }) => {
   const c = STATUS_COLORS[status] || STATUS_COLORS.new;
   return (
-    <span style={{ background:c.bg, border:`1px solid ${c.border}`, color:c.text, borderRadius:'20px', padding:'3px 10px', fontSize:'11px', fontWeight:600, textTransform:'capitalize', whiteSpace:'nowrap' }}>
+    <span style={{ background:c.bg, border:`1px solid ${c.border}`, color:c.text, borderRadius:'20px', padding:'4px 10px', fontSize:'12px', fontWeight:600, textTransform:'capitalize', whiteSpace:'nowrap' }}>
       {status?.replace('_', ' ')}
     </span>
   );
@@ -57,8 +57,8 @@ const LeadModal = ({ lead, onClose, onSave }) => {
     } finally { setSaving(false); }
   };
 
-  const inputStyle = { width:'100%', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:'10px', padding:'11px 14px', color:'#fff', fontSize:'14px', fontFamily:"'Inter',sans-serif", boxSizing:'border-box' };
-  const labelStyle = { fontSize:'11px', fontWeight:600, color:'rgba(255,255,255,0.4)', letterSpacing:'0.7px', textTransform:'uppercase', display:'block', marginBottom:'6px' };
+  const inputStyle = { width:'100%', background:'#f8fafc', border:'1px solid #cbd5e1', borderRadius:'10px', padding:'11px 14px', color:'#0f172a', fontSize:'14px', fontFamily:"'Inter',sans-serif", boxSizing:'border-box', outline:'none' };
+  const labelStyle = { fontSize:'12px', fontWeight:600, color:'#475569', letterSpacing:'0.5px', textTransform:'uppercase', display:'block', marginBottom:'6px' };
 
   return (
     <div style={styles.overlay} onClick={e => e.target === e.currentTarget && onClose()}>
@@ -106,7 +106,7 @@ const LeadModal = ({ lead, onClose, onSave }) => {
           </div>
         </form>
       </div>
-      <style>{`select option { background: #1a1a2e; } input::placeholder { color:rgba(255,255,255,0.18); } input:focus,select:focus { outline:none; border-color:#3b82f6; }`}</style>
+      <style>{`select option { background: #ffffff; color: #0f172a; } input::placeholder { color:#94a3b8; } input:focus,select:focus { border-color:#3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.1); }`}</style>
     </div>
   );
 };
@@ -265,8 +265,8 @@ const Leads = () => {
       {deleteId && (
         <div style={styles.overlay}>
           <div style={{ ...styles.modal, maxWidth:'380px' }}>
-            <h3 style={{ color:'#fff', fontSize:'18px', fontWeight:700, margin:'0 0 10px' }}>Delete Lead?</h3>
-            <p style={{ color:'rgba(255,255,255,0.4)', fontSize:'14px', margin:'0 0 24px' }}>This action cannot be undone.</p>
+            <h3 style={{ color:'#0f172a', fontSize:'20px', fontWeight:800, margin:'0 0 10px' }}>Delete Lead?</h3>
+            <p style={{ color:'#64748b', fontSize:'14px', margin:'0 0 24px' }}>This action cannot be undone.</p>
             <div style={{ display:'flex', gap:'10px' }}>
               <button onClick={() => setDeleteId(null)} style={styles.cancelBtn}>Cancel</button>
               <button onClick={handleDelete} disabled={deleting} style={{ ...styles.saveBtn, background:'linear-gradient(135deg,#dc2626,#ef4444)', opacity: deleting ? 0.7 : 1 }}>
@@ -282,8 +282,8 @@ const Leads = () => {
         @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         @keyframes spin { to{transform:rotate(360deg)} }
         .lead-row { animation: fadeUp 0.3s ease both; }
-        .lead-row:hover td { background: rgba(255,255,255,0.03) !important; }
-        input::placeholder { color:rgba(255,255,255,0.2); }
+        .lead-row:hover td { background: #f8fafc !important; }
+        input::placeholder { color:#94a3b8; }
         input:focus { outline:none; }
       `}</style>
     </div>
@@ -291,45 +291,45 @@ const Leads = () => {
 };
 
 const styles = {
-  page:       { minHeight:'100vh', background:'linear-gradient(160deg,#08080f,#0c0c1a)', fontFamily:"'Inter',system-ui,sans-serif" },
+  page:       { minHeight:'100vh', background:'#f8fafc', fontFamily:"'Inter',system-ui,sans-serif" },
   body:       { maxWidth:'1200px', margin:'0 auto', padding:'40px 24px' },
   header:     { display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:'28px', flexWrap:'wrap', gap:'16px' },
-  pageTitle:  { fontSize:'28px', fontWeight:800, color:'#fff', margin:0, letterSpacing:'-0.5px' },
-  pageSub:    { color:'rgba(255,255,255,0.3)', fontSize:'14px', marginTop:'4px' },
-  addBtn:     { display:'flex', alignItems:'center', gap:'8px', background:'linear-gradient(135deg,#2563eb,#4f46e5)', color:'#fff', border:'none', borderRadius:'12px', padding:'12px 20px', fontSize:'14px', fontWeight:600, cursor:'pointer', transition:'all 0.2s ease', fontFamily:"'Inter',sans-serif" },
+  pageTitle:  { fontSize:'30px', fontWeight:800, color:'#0f172a', margin:0, letterSpacing:'-0.5px' },
+  pageSub:    { color:'#64748b', fontSize:'15px', marginTop:'4px' },
+  addBtn:     { display:'flex', alignItems:'center', gap:'8px', background:'linear-gradient(135deg,#2563eb,#4f46e5)', color:'#fff', border:'none', borderRadius:'10px', padding:'12px 20px', fontSize:'14px', fontWeight:600, cursor:'pointer', transition:'all 0.2s ease', fontFamily:"'Inter',sans-serif", boxShadow:'0 4px 12px rgba(59,130,246,0.25)' },
   toolbar:    { display:'flex', gap:'16px', marginBottom:'20px', flexWrap:'wrap', alignItems:'center' },
-  searchWrap: { display:'flex', alignItems:'center', gap:'10px', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'12px', padding:'10px 14px', flex:'1', minWidth:'200px' },
-  searchInput:{ flex:1, background:'transparent', border:'none', color:'#fff', fontSize:'14px', fontFamily:"'Inter',sans-serif" },
+  searchWrap: { display:'flex', alignItems:'center', gap:'10px', background:'#ffffff', border:'1px solid #e2e8f0', borderRadius:'12px', padding:'10px 14px', flex:'1', minWidth:'200px', boxShadow:'0 1px 3px rgba(0,0,0,0.05)' },
+  searchInput:{ flex:1, background:'transparent', border:'none', color:'#0f172a', fontSize:'14px', fontFamily:"'Inter',sans-serif" },
   filterWrap: { display:'flex', gap:'10px', flexWrap:'wrap' },
-  filterSelect: { background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.8)', borderRadius:'8px', padding:'8px 12px', fontSize:'13px', fontWeight:500, cursor:'pointer', textTransform:'capitalize', fontFamily:"'Inter',sans-serif", transition:'all 0.15s', outline:'none' },
-  tableWrap:  { background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'16px', overflow:'hidden' },
+  filterSelect: { background:'#ffffff', border:'1px solid #e2e8f0', color:'#475569', borderRadius:'10px', padding:'10px 14px', fontSize:'13px', fontWeight:500, cursor:'pointer', textTransform:'capitalize', fontFamily:"'Inter',sans-serif", transition:'all 0.15s', outline:'none', boxShadow:'0 1px 3px rgba(0,0,0,0.05)' },
+  tableWrap:  { background:'#ffffff', border:'1px solid #e2e8f0', borderRadius:'16px', overflow:'hidden', boxShadow:'0 4px 6px -1px rgba(0,0,0,0.05)' },
   table:      { width:'100%', borderCollapse:'collapse' },
-  th:         { padding:'14px 16px', textAlign:'left', fontSize:'11px', fontWeight:600, color:'rgba(255,255,255,0.35)', textTransform:'uppercase', letterSpacing:'0.6px', borderBottom:'1px solid rgba(255,255,255,0.06)', background:'rgba(255,255,255,0.02)' },
-  tr:         { borderBottom:'1px solid rgba(255,255,255,0.04)', transition:'background 0.15s' },
+  th:         { padding:'14px 16px', textAlign:'left', fontSize:'12px', fontWeight:600, color:'#64748b', textTransform:'uppercase', letterSpacing:'0.6px', borderBottom:'1px solid #e2e8f0', background:'#f8fafc' },
+  tr:         { borderBottom:'1px solid #f1f5f9', transition:'background 0.15s' },
   td:         { padding:'14px 16px', verticalAlign:'middle' },
   nameCell:   { display:'flex', alignItems:'center', gap:'12px' },
-  avatar:     { width:'34px', height:'34px', borderRadius:'10px', background:'linear-gradient(135deg,#2563eb,#4f46e5)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'14px', fontWeight:700, color:'#fff', flexShrink:0 },
-  leadName:   { fontSize:'14px', fontWeight:600, color:'#fff', margin:0 },
-  leadEmail:  { fontSize:'12px', color:'rgba(255,255,255,0.3)', margin:'2px 0 0' },
-  company:    { fontSize:'13px', color:'rgba(255,255,255,0.5)' },
-  dealVal:    { fontSize:'14px', fontWeight:600, color:'#fff' },
-  source:     { fontSize:'12px', color:'rgba(255,255,255,0.4)', textTransform:'capitalize' },
+  avatar:     { width:'36px', height:'36px', borderRadius:'10px', background:'linear-gradient(135deg,#2563eb,#4f46e5)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'14px', fontWeight:700, color:'#fff', flexShrink:0, boxShadow:'0 2px 4px rgba(37,99,235,0.2)' },
+  leadName:   { fontSize:'14px', fontWeight:600, color:'#0f172a', margin:0 },
+  leadEmail:  { fontSize:'13px', color:'#64748b', margin:'2px 0 0' },
+  company:    { fontSize:'14px', color:'#475569', fontWeight: 500 },
+  dealVal:    { fontSize:'14px', fontWeight:700, color:'#0f172a' },
+  source:     { fontSize:'13px', color:'#64748b', textTransform:'capitalize', fontWeight: 500 },
   actions:    { display:'flex', gap:'6px' },
-  iconBtn:    { background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.6)', borderRadius:'8px', padding:'7px', cursor:'pointer', display:'flex', alignItems:'center', transition:'all 0.15s' },
+  iconBtn:    { background:'#f8fafc', border:'1px solid #e2e8f0', color:'#64748b', borderRadius:'8px', padding:'7px', cursor:'pointer', display:'flex', alignItems:'center', transition:'all 0.15s' },
   centered:   { display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'300px', gap:'14px' },
-  spinner:    { width:'36px', height:'36px', border:'3px solid rgba(255,255,255,0.07)', borderTop:'3px solid #3b82f6', borderRadius:'50%', animation:'spin 0.8s linear infinite' },
-  loadTxt:    { color:'rgba(255,255,255,0.3)', fontSize:'14px' },
-  empty:      { display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'280px', border:'1px dashed rgba(255,255,255,0.08)', borderRadius:'16px' },
+  spinner:    { width:'36px', height:'36px', border:'3px solid #e2e8f0', borderTop:'3px solid #3b82f6', borderRadius:'50%', animation:'spin 0.8s linear infinite' },
+  loadTxt:    { color:'#64748b', fontSize:'14px', fontWeight: 500 },
+  empty:      { display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:'280px', border:'1px dashed #cbd5e1', borderRadius:'16px', background:'#ffffff' },
   // Modal
-  overlay:    { position:'fixed', inset:0, background:'rgba(0,0,0,0.7)', backdropFilter:'blur(4px)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000, padding:'20px' },
-  modal:      { background:'#0f0f1c', border:'1px solid rgba(255,255,255,0.1)', borderRadius:'20px', padding:'32px', width:'100%', maxWidth:'560px', maxHeight:'90vh', overflowY:'auto' },
+  overlay:    { position:'fixed', inset:0, background:'rgba(15,23,42,0.4)', backdropFilter:'blur(4px)', display:'flex', alignItems:'center', justifyContent:'center', zIndex:1000, padding:'20px' },
+  modal:      { background:'#ffffff', border:'1px solid #e2e8f0', borderRadius:'20px', padding:'32px', width:'100%', maxWidth:'560px', maxHeight:'90vh', overflowY:'auto', boxShadow:'0 20px 25px -5px rgba(0,0,0,0.1)' },
   modalHeader:{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'24px' },
-  modalTitle: { fontSize:'20px', fontWeight:700, color:'#fff', margin:0 },
-  closeBtn:   { background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.6)', borderRadius:'8px', padding:'6px', cursor:'pointer', display:'flex', alignItems:'center' },
+  modalTitle: { fontSize:'22px', fontWeight:800, color:'#0f172a', margin:0 },
+  closeBtn:   { background:'#f8fafc', border:'1px solid #e2e8f0', color:'#64748b', borderRadius:'8px', padding:'6px', cursor:'pointer', display:'flex', alignItems:'center' },
   row2:       { display:'grid', gridTemplateColumns:'1fr 1fr', gap:'12px' },
-  errBox:     { background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.25)', color:'#fca5a5', borderRadius:'10px', padding:'10px 14px', fontSize:'13px', marginBottom:'16px' },
-  cancelBtn:  { flex:1, background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.1)', color:'rgba(255,255,255,0.6)', borderRadius:'10px', padding:'12px', fontSize:'14px', fontWeight:600, cursor:'pointer', fontFamily:"'Inter',sans-serif" },
-  saveBtn:    { flex:2, background:'linear-gradient(135deg,#2563eb,#4f46e5)', border:'none', color:'#fff', borderRadius:'10px', padding:'12px', fontSize:'14px', fontWeight:600, cursor:'pointer', fontFamily:"'Inter',sans-serif" },
+  errBox:     { background:'#fef2f2', border:'1px solid #fecaca', color:'#ef4444', borderRadius:'10px', padding:'10px 14px', fontSize:'13px', marginBottom:'16px', fontWeight: 500 },
+  cancelBtn:  { flex:1, background:'#f8fafc', border:'1px solid #cbd5e1', color:'#475569', borderRadius:'10px', padding:'12px', fontSize:'14px', fontWeight:600, cursor:'pointer', fontFamily:"'Inter',sans-serif" },
+  saveBtn:    { flex:2, background:'linear-gradient(135deg,#2563eb,#4f46e5)', border:'none', color:'#fff', borderRadius:'10px', padding:'12px', fontSize:'14px', fontWeight:600, cursor:'pointer', fontFamily:"'Inter',sans-serif", boxShadow:'0 4px 12px rgba(59,130,246,0.25)' },
 };
 
 export default Leads;
