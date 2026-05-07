@@ -145,7 +145,7 @@ const Leads = () => {
 
   const filtered = leads.filter(l => {
     const matchSearch = search === '' ||
-      l.lead_name?.toLowerCase().includes(search.toLowerCase()) ||
+      l.name?.toLowerCase().includes(search.toLowerCase()) ||
       l.company_name?.toLowerCase().includes(search.toLowerCase());
     const matchStatus = filterStatus === 'all' || l.status === filterStatus;
     return matchSearch && matchStatus;
@@ -210,9 +210,9 @@ const Leads = () => {
                   <tr key={lead.id} style={{ ...styles.tr, animationDelay: `${i * 40}ms` }} className="lead-row">
                     <td style={styles.td}>
                       <div style={styles.nameCell}>
-                        <div style={styles.avatar}>{lead.lead_name?.[0]?.toUpperCase() || '?'}</div>
+                        <div style={styles.avatar}>{lead.name?.[0]?.toUpperCase() || '?'}</div>
                         <div>
-                          <p style={styles.leadName}>{lead.lead_name}</p>
+                          <p style={styles.leadName}>{lead.name}</p>
                           {lead.email && <p style={styles.leadEmail}>{lead.email}</p>}
                         </div>
                       </div>

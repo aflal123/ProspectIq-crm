@@ -28,13 +28,24 @@ router.get('/', authMiddleware, async (req, res) => {
 // CREATE Lead
 router.post('/', authMiddleware, async (req, res) => {
   try {
+    // Map frontend field names to actual DB column names
+    const { lead_name, name, ...rest } = req.body;
+    const leadData = {
+      ...rest,
+      name: lead_name || name,           // accept both lead_name and name
+      assigned_to: req.user.id,          // track which user created this lead
+    };
+
     const { data, error } = await supabase
       .from('leads')
-      .insert({ ...req.body, user_id: req.user.id })
+      .insert(leadData)
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Lead insert error:', JSON.stringify(error));
+      throw error;
+    }
 
     res.status(201).json({ 
       success: true, 
@@ -42,8 +53,8 @@ router.post('/', authMiddleware, async (req, res) => {
       data 
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Failed to create lead' });
+    console.error('Create lead error:', err);
+    res.status(500).json({ message: 'Failed to create lead', detail: err.message });
   }
 });
 

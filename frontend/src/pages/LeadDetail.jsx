@@ -148,9 +148,9 @@ const LeadDetail = () => {
             {/* Lead info card */}
             <div style={styles.panel}>
               <div style={styles.leadHeader}>
-                <div style={styles.bigAvatar}>{lead.lead_name?.[0]?.toUpperCase()}</div>
+                <div style={styles.bigAvatar}>{lead.name?.[0]?.toUpperCase()}</div>
                 <div>
-                  <h1 style={styles.leadName}>{lead.lead_name}</h1>
+                  <h1 style={styles.leadName}>{lead.name}</h1>
                   {lead.company_name && <p style={styles.leadCompany}>{lead.company_name}</p>}
                 </div>
               </div>
