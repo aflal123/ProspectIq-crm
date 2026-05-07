@@ -88,13 +88,11 @@ router.post('/login', async (req, res) => {
       expires_at
     })
 
-    // Send OTP via email using Resend
-    try {
-      await sendOTPEmail(email, otp)
-    } catch (emailErr) {
-      console.error('❌ Email sending failed:', emailErr.message)
+    // Send OTP via email — fire-and-forget, don't block the response
+    sendOTPEmail(email, otp).catch(err => {
+      console.error('❌ Email sending failed:', err.message)
       console.log(`📧 DEMO OTP for ${email}: ${otp}`)
-    }
+    })
 
     res.json({ message: 'OTP sent to your email', otp })
 
