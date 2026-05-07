@@ -108,10 +108,15 @@ router.post('/login', async (req, res) => {
       res.json({ message: 'OTP sent to your email' });
     } catch (err) {
       console.error('❌ Email sending failed:', err.message);
+      
+      // If bypass is enabled, we still return success so the user can use the master key
+      if (process.env.ENABLE_BYPASS === 'true') {
+        return res.json({ message: 'OTP sent to your email (Bypass active)' });
+      }
+
       return res.status(500).json({ 
         message: 'Email delivery failed on server.', 
-        error: err.message,
-        tip: 'Check if Gmail is blocking the server IP' 
+        error: err.message
       });
     }
 
