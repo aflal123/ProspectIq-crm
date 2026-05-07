@@ -7,10 +7,17 @@ const supabase = require('../db/supabase');
 // GET All Leads
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('leads')
       .select('*, users(name)')
       .order('created_at', { ascending: false });
+
+    // If user is not admin, only show their own leads
+    if (req.user.email !== 'admin@example.com') {
+      query = query.eq('assigned_to', req.user.id);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
 

@@ -5,9 +5,16 @@ const supabase = require('../db/supabase')
 
 router.get('/', authMiddleware, async (req, res) => {
   try {
-    const { data: leads, error } = await supabase
+    let query = supabase
       .from('leads')
       .select('status, deal_value')
+
+    // If user is not admin, only fetch their own leads
+    if (req.user.email !== 'admin@example.com') {
+      query = query.eq('assigned_to', req.user.id)
+    }
+
+    const { data: leads, error } = await query
 
     if (error) throw error
 
