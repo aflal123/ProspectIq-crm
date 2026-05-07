@@ -88,11 +88,18 @@ router.post('/login', async (req, res) => {
       expires_at
     })
 
-    // Send OTP via email — fire-and-forget, don't block the response
-    sendOTPEmail(email, otp).catch(err => {
-      console.error('❌ Email sending failed:', err.message)
-      console.log(`📧 DEMO OTP for ${email}: ${otp}`)
-    })
+    // Send OTP via email
+    try {
+      console.log(`📧 [DEV] OTP for ${email}: ${otp}`); // Log to console for real-time dev
+      await sendOTPEmail(email, otp);
+    } catch (err) {
+      console.error('❌ Email sending failed:', err.message);
+      // In development, we still want to let them through if the email fails but we have the code in console
+      if (process.env.NODE_ENV === 'development') {
+         return res.json({ message: 'OTP sent (Check server console)', devMode: true });
+      }
+      return res.status(500).json({ message: 'Failed to send OTP email. Please try again.' });
+    }
 
     res.json({ message: 'OTP sent to your email' })
 
@@ -175,10 +182,14 @@ router.post('/resend-otp', async (req, res) => {
     await supabase.from('otps').insert({ email, otp, expires_at })
 
     try {
-      await sendOTPEmail(email, otp)
+      console.log(`📧 [DEV] Resend OTP for ${email}: ${otp}`);
+      await sendOTPEmail(email, otp);
     } catch (emailErr) {
-      console.error('❌ Resend email failed:', emailErr.message)
-      console.log(`📧 DEMO OTP for ${email}: ${otp}`)
+      console.error('❌ Resend email failed:', emailErr.message);
+      if (process.env.NODE_ENV === 'development') {
+        return res.json({ message: 'New OTP generated (Check server console)', devMode: true });
+      }
+      return res.status(500).json({ message: 'Failed to resend OTP email.' });
     }
 
     res.json({ message: 'New OTP sent to your email' })

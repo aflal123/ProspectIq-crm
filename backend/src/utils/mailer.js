@@ -1,21 +1,19 @@
 const nodemailer = require('nodemailer');
 
 const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.EMAIL_PORT) || 587,
-  secure: false,
+  service: 'gmail', // Using the built-in service helper for Gmail
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
-  connectionTimeout: 5000,
-  greetingTimeout: 5000,
-  socketTimeout: 5000,
+  tls: {
+    rejectUnauthorized: false // Helps with some network/domain restrictions
+  }
 });
 
 const sendOTPEmail = async (toEmail, otp) => {
   const mailOptions = {
-    from: `"ProspectIQ" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+    from: process.env.EMAIL_FROM || `"ProspectIQ" <${process.env.EMAIL_USER}>`,
     to: toEmail,
     subject: 'Your ProspectIQ Login OTP',
     html: `
@@ -40,6 +38,7 @@ const sendOTPEmail = async (toEmail, otp) => {
   };
 
   await transporter.sendMail(mailOptions);
+  console.log(`✅ OTP Email sent successfully to: ${toEmail}`);
 };
 
 module.exports = { sendOTPEmail };
