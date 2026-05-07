@@ -146,7 +146,7 @@ const Leads = () => {
     } finally { setDeleting(false); }
   };
 
-  const fmt = n => n ? `$${Number(n).toLocaleString()}` : '—';
+  const fmt = n => n ? `LKR ${Number(n).toLocaleString()}` : '—';
 
   const filtered = leads.filter(l => {
     const matchSearch = search === '' ||

@@ -41,7 +41,7 @@ Write a personalized sales email to:
 - Company: ${lead.company_name || 'their company'}
 - Lead Source: ${lead.lead_source}
 - Current Status: ${lead.status}
-- Deal Value: $${lead.deal_value || 0}
+- Deal Value: LKR ${lead.deal_value || 0}
 - Notes/History: ${notesText}
 
 Tone: ${tone}
@@ -92,7 +92,7 @@ Lead Profile:
 - Company: ${lead.company_name || 'Unknown'}
 - Source: ${lead.lead_source}
 - Status: ${lead.status}
-- Deal Value: $${lead.deal_value || 0}
+- Deal Value: LKR ${lead.deal_value || 0}
 - Notes History: ${notesText}
 
 The sales rep asks: "${question}"
@@ -135,7 +135,7 @@ router.post('/pipeline-health', authMiddleware, async (req, res) => {
     }
 
     const leadsSummary = leads.map(l =>
-      `- ${l.lead_name} (${l.company_name || 'N/A'}) | Status: ${l.status} | Value: $${l.deal_value || 0} | AI Score: ${l.ai_score || 'unscored'}`
+      `- ${l.lead_name} (${l.company_name || 'N/A'}) | Status: ${l.status} | Value: LKR ${l.deal_value || 0} | AI Score: ${l.ai_score || 'unscored'}`
     ).join('\n');
 
     const prompt = `You are a senior sales manager reviewing a pipeline.

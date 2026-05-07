@@ -111,7 +111,7 @@ const LeadDetail = () => {
     finally { setScoringAI(false); }
   };
 
-  const fmt = n => n ? `$${Number(n).toLocaleString()}` : '—';
+  const fmt = n => n ? `LKR ${Number(n).toLocaleString()}` : '—';
   const timeAgo = (d) => {
     const diff = (Date.now() - new Date(d)) / 1000;
     if (diff < 60)   return 'just now';

@@ -107,9 +107,9 @@ const Dashboard = () => {
   }, []);
 
   const fmt = (n) => {
-    if (n >= 1000000) return `$${(n / 1000000).toFixed(1)}M`;
-    if (n >= 1000) return `$${(n / 1000).toFixed(1)}K`;
-    return `$${n || 0}`;
+    if (n >= 1000000) return `LKR ${(n / 1000000).toFixed(1)}M`;
+    if (n >= 1000) return `LKR ${(n / 1000).toFixed(1)}K`;
+    return `LKR ${n || 0}`;
   };
 
   const winRate = stats
