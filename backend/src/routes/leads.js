@@ -9,7 +9,7 @@ router.get('/', authMiddleware, async (req, res) => {
   try {
     const { data, error } = await supabase
       .from('leads')
-      .select('*')
+      .select('*, users(name)')
       .order('created_at', { ascending: false });
 
     if (error) throw error;

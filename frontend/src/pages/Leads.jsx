@@ -118,6 +118,8 @@ const Leads = () => {
   const [loading, setLoading]       = useState(true);
   const [search, setSearch]         = useState('');
   const [filterStatus, setFilter]   = useState('all');
+  const [filterSource, setFilterSource] = useState('all');
+  const [filterAssigned, setFilterAssigned] = useState('all'); // 'all' or 'me'
   const [modal, setModal]           = useState(null); // null | 'add' | lead object
   const [deleteId, setDeleteId]     = useState(null);
   const [deleting, setDeleting]     = useState(false);
@@ -146,9 +148,17 @@ const Leads = () => {
   const filtered = leads.filter(l => {
     const matchSearch = search === '' ||
       l.name?.toLowerCase().includes(search.toLowerCase()) ||
-      l.company_name?.toLowerCase().includes(search.toLowerCase());
+      l.company_name?.toLowerCase().includes(search.toLowerCase()) ||
+      l.email?.toLowerCase().includes(search.toLowerCase());
     const matchStatus = filterStatus === 'all' || l.status === filterStatus;
-    return matchSearch && matchStatus;
+    const matchSource = filterSource === 'all' || l.lead_source === filterSource;
+    // For 'me' filter, we would match l.assigned_to against currentUser.id
+    // But since we don't have current user readily available here, we'll just parse the JWT if needed
+    // or assume the backend could filter it. Let's just do a basic implementation.
+    const tokenUser = JSON.parse(atob(localStorage.getItem('token').split('.')[1]));
+    const matchAssigned = filterAssigned === 'all' || l.assigned_to === tokenUser.id;
+    
+    return matchSearch && matchStatus && matchSource && matchAssigned;
   });
 
   return (
@@ -177,12 +187,18 @@ const Leads = () => {
               style={styles.searchInput} />
           </div>
           <div style={styles.filterWrap}>
-            {['all', ...STATUSES].map(s => (
-              <button key={s} onClick={() => setFilter(s)}
-                style={{ ...styles.filterBtn, ...(filterStatus === s ? styles.filterActive : {}) }}>
-                {s === 'all' ? 'All' : s.replace('_', ' ')}
-              </button>
-            ))}
+            <select style={styles.filterSelect} value={filterStatus} onChange={e => setFilter(e.target.value)}>
+              <option value="all">All Statuses</option>
+              {STATUSES.map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
+            </select>
+            <select style={styles.filterSelect} value={filterSource} onChange={e => setFilterSource(e.target.value)}>
+              <option value="all">All Sources</option>
+              {SOURCES.map(s => <option key={s} value={s}>{s.replace('_', ' ')}</option>)}
+            </select>
+            <select style={styles.filterSelect} value={filterAssigned} onChange={e => setFilterAssigned(e.target.value)}>
+              <option value="all">Everyone's Leads</option>
+              <option value="me">My Leads</option>
+            </select>
           </div>
         </div>
 
@@ -284,9 +300,8 @@ const styles = {
   toolbar:    { display:'flex', gap:'16px', marginBottom:'20px', flexWrap:'wrap', alignItems:'center' },
   searchWrap: { display:'flex', alignItems:'center', gap:'10px', background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'12px', padding:'10px 14px', flex:'1', minWidth:'200px' },
   searchInput:{ flex:1, background:'transparent', border:'none', color:'#fff', fontSize:'14px', fontFamily:"'Inter',sans-serif" },
-  filterWrap: { display:'flex', gap:'6px', flexWrap:'wrap' },
-  filterBtn:  { background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.4)', borderRadius:'8px', padding:'7px 12px', fontSize:'12px', fontWeight:500, cursor:'pointer', textTransform:'capitalize', fontFamily:"'Inter',sans-serif", transition:'all 0.15s' },
-  filterActive:{ background:'rgba(59,130,246,0.15)', border:'1px solid rgba(59,130,246,0.3)', color:'#60a5fa' },
+  filterWrap: { display:'flex', gap:'10px', flexWrap:'wrap' },
+  filterSelect: { background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.08)', color:'rgba(255,255,255,0.8)', borderRadius:'8px', padding:'8px 12px', fontSize:'13px', fontWeight:500, cursor:'pointer', textTransform:'capitalize', fontFamily:"'Inter',sans-serif", transition:'all 0.15s', outline:'none' },
   tableWrap:  { background:'rgba(255,255,255,0.02)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'16px', overflow:'hidden' },
   table:      { width:'100%', borderCollapse:'collapse' },
   th:         { padding:'14px 16px', textAlign:'left', fontSize:'11px', fontWeight:600, color:'rgba(255,255,255,0.35)', textTransform:'uppercase', letterSpacing:'0.6px', borderBottom:'1px solid rgba(255,255,255,0.06)', background:'rgba(255,255,255,0.02)' },

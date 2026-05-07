@@ -163,6 +163,8 @@ const LeadDetail = () => {
                   { label:'Source',     val: lead.lead_source?.replace('_',' ') || '—' },
                   { label:'Deal Value', val: fmt(lead.deal_value) },
                   { label:'Created',    val: new Date(lead.created_at).toLocaleDateString() },
+                  { label:'Last Updated',val: new Date(lead.updated_at).toLocaleDateString() },
+                  { label:'Assigned To',val: lead.users?.name || 'Sales Rep' },
                 ].map(r => (
                   <div key={r.label} style={styles.infoRow}>
                     <span style={styles.infoLabel}>{r.label}</span>
