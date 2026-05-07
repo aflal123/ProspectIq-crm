@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const supabase = require('../db/supabase')
 const { generateOTP, getOTPExpiry } = require('../utils/otp')
 const { sendOTPEmail } = require('../utils/mailer')
+const { Resend } = require('resend')
 
 // Register New User
 router.post('/register', async (req, res) => {
