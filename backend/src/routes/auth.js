@@ -95,14 +95,19 @@ router.post('/login', async (req, res) => {
       expires_at
     })
 
-    // Send OTP via email — fire-and-forget, NEVER block the response
-    // Gmail SMTP is blocked from Railway/Vercel cloud IPs. Use Brevo/SendGrid for production.
-    sendOTPEmail(email, otp).catch(err => {
-      console.error('❌ Email sending failed:', err.message)
-      console.log(`📧 OTP for ${email}: ${otp}`)
-    })
-
-    res.json({ message: 'OTP sent to your email', otp })
+    // Send OTP via email
+    try {
+      console.log(`📧 [DEV] OTP for ${email}: ${otp}`); 
+      await sendOTPEmail(email, otp);
+      res.json({ message: 'OTP sent to your email' });
+    } catch (err) {
+      console.error('❌ Email sending failed:', err.message);
+      // Fallback for development if email fails but we have the code in console
+      if (process.env.NODE_ENV && process.env.NODE_ENV.includes('development')) {
+         return res.json({ message: 'OTP sent (Check server console)', devMode: true });
+      }
+      return res.status(500).json({ message: 'Failed to send OTP email. Please try again.' });
+    }
 
   } catch (err) {
     console.error('Login error:', err)
@@ -185,13 +190,18 @@ router.post('/resend-otp', async (req, res) => {
 
     await supabase.from('otps').insert({ email, otp, expires_at })
 
-    // Send OTP via email — fire-and-forget, NEVER block the response
-    sendOTPEmail(email, otp).catch(err => {
-      console.error('❌ Email sending failed:', err.message)
-      console.log(`📧 OTP for ${email}: ${otp}`)
-    })
-
-    res.json({ message: 'New OTP sent to your email', otp })
+    // Send OTP via email
+    try {
+      console.log(`📧 [DEV] Resend OTP for ${email}: ${otp}`);
+      await sendOTPEmail(email, otp);
+      res.json({ message: 'New OTP sent to your email' });
+    } catch (err) {
+      console.error('❌ Resend email failed:', err.message);
+      if (process.env.NODE_ENV && process.env.NODE_ENV.includes('development')) {
+        return res.json({ message: 'New OTP generated (Check server console)', devMode: true });
+      }
+      return res.status(500).json({ message: 'Failed to resend OTP email.' });
+    }
   } catch (err) {
     console.error(err)
     res.status(500).json({ message: 'Server error' })
