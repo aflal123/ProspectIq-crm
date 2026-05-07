@@ -107,16 +107,11 @@ router.post('/login', async (req, res) => {
       }
       res.json({ message: 'OTP sent to your email' });
     } catch (err) {
-      console.error('❌ Email sending failed:', err.message);
-      
-      // If bypass is enabled, we still return success but without the 'Emergency' text
-      if (process.env.ENABLE_BYPASS === 'true') {
-        return res.json({ message: 'OTP sent to your email' });
-      }
-
+      console.error('❌ Login Error:', err);
       return res.status(500).json({ 
         message: 'Email delivery failed on server.', 
-        error: err.message
+        error: err.message,
+        stack: err.stack // This will tell us the exact problem
       });
     }
 
