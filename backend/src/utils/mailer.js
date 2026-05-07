@@ -3,7 +3,31 @@ const axios = require('axios');
 const nodemailer = require('nodemailer');
 
 const sendOTPEmail = async (toEmail, otp) => {
-  // 1. Professional Choice: RESEND (Recommended for Production)
+  // 1. Primary Choice: BREVO API (Allows sending to anyone instantly)
+  if (process.env.BREVO_API_KEY) {
+    try {
+      await axios.post('https://api.brevo.com/v3/smtp/email', {
+        sender: { name: "ProspectIQ", email: "noreply@prospectiq.com" },
+        to: [{ email: toEmail }],
+        subject: "Your ProspectIQ Login OTP",
+        htmlContent: `
+          <div style="font-family: Arial, sans-serif; padding: 20px;">
+            <h2>ProspectIQ</h2>
+            <p>Your login code is: <strong style="font-size: 24px;">${otp}</strong></p>
+            <p>This code will expire in 5 minutes.</p>
+          </div>
+        `
+      }, {
+        headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' }
+      });
+      console.log(`✅ Brevo: OTP sent to ${toEmail}`);
+      return;
+    } catch (err) {
+      console.error('❌ Brevo failed:', err.response?.data?.message || err.message);
+    }
+  }
+
+  // 2. Secondary Choice: RESEND API
   if (process.env.RESEND_API_KEY) {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
@@ -20,25 +44,7 @@ const sendOTPEmail = async (toEmail, otp) => {
     }
   }
 
-  // 2. Secondary Choice: BREVO API
-  if (process.env.BREVO_API_KEY) {
-    try {
-      await axios.post('https://api.brevo.com/v3/smtp/email', {
-        sender: { name: "ProspectIQ", email: "noreply@prospectiq.com" },
-        to: [{ email: toEmail }],
-        subject: "Your ProspectIQ Login OTP",
-        htmlContent: `<p>Your login code is: <b>${otp}</b></p>`
-      }, {
-        headers: { 'api-key': process.env.BREVO_API_KEY }
-      });
-      console.log(`✅ Brevo: OTP sent to ${toEmail}`);
-      return;
-    } catch (err) {
-      console.error('❌ Brevo failed:', err.message);
-    }
-  }
-
-  // 3. Last Resort: Gmail SMTP (For Local Development)
+  // 3. Last Resort: Gmail SMTP (Local)
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS }
