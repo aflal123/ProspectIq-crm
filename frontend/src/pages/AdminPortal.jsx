@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import api from '../services/api';
-import { Users, Settings, Activity, Shield, Trash2, Lock, KeyRound, X } from 'lucide-react';
+import { Users, Settings, Activity, Shield, Trash2, Lock, KeyRound, X, LogOut } from 'lucide-react';
 
 const AdminPortal = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -56,6 +56,13 @@ const AdminPortal = () => {
     } catch (err) {
       setLoginErr(err.response?.data?.message || 'Login failed');
     }
+  };
+
+  const handleAdminLogout = () => {
+    setIsAuthenticated(false);
+    sessionStorage.removeItem('adminAuth');
+    sessionStorage.removeItem('adminPass');
+    setPassword('');
   };
 
   const handleDelete = async (id) => {
@@ -263,6 +270,15 @@ const AdminPortal = () => {
                 {tab.icon} {tab.label}
               </div>
             ))}
+            
+            <div style={{ marginTop: 'auto', paddingTop: '20px', borderTop: '1px solid #e2e8f0', marginTop: '20px' }}>
+              <div 
+                onClick={handleAdminLogout} 
+                style={{ ...S.menuItem, color: '#ef4444' }}
+              >
+                <LogOut size={18} /> Lock Portal
+              </div>
+            </div>
           </div>
 
           {/* Main Content */}
