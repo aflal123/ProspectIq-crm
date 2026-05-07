@@ -62,15 +62,8 @@ const Login = () => {
       // Step 1 — verify password → backend sends OTP
       const res = await api.post('/auth/login', form)
 
-      if (res.data.otp) {
-        toast.info(`DEV MODE: Your code is ${res.data.otp}`, {
-          autoClose: 10000,
-          position: "bottom-center"
-        });
-      }
-
-      // Move to OTP page — pass OTP so user sees it on screen even if email fails
-      navigate('/verify-otp', { state: { email: form.email, otp: res.data.otp } })
+      // Move to OTP page
+      navigate('/verify-otp', { state: { email: form.email } })
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Check your credentials.');
     } finally {
