@@ -15,7 +15,11 @@ app.use(helmet({
   contentSecurityPolicy: false,
 }))
 app.use(cors({
-  origin: true, // Temporarily allow all origins for debugging production connectivity
+  origin: [
+    'http://localhost:5173',
+    'https://prospectiq.online',
+    'https://prospect-iq-crm.vercel.app'
+  ],
   credentials: true
 }));
 app.use(express.json());

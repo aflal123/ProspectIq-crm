@@ -2,10 +2,9 @@ import axios from 'axios';
 
 // All API calls go through this single axios instance
 // Automatic API URL selection
-const isProduction = window.location.hostname !== 'localhost';
-const baseURL = isProduction 
-  ? 'https://prospectiq-crm-production.up.railway.app/api'
-  : (import.meta.env.VITE_API_URL || 'http://localhost:8000/api');
+const baseURL = window.location.hostname === 'localhost' 
+  ? (import.meta.env.VITE_API_URL || 'http://localhost:8000/api')
+  : 'https://api.prospectiq.online/api';
 
 const api = axios.create({
   baseURL,
