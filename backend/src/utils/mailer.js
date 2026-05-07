@@ -5,9 +5,11 @@ const { Resend } = require('resend');
  * Compliant with production guardrails
  */
 const sendOTPEmail = async (toEmail, otp) => {
-  // Use the sanitized key from index.js or re-sanitize here
-  const cleanKey = (process.env.RESEND_API_KEY || '').trim();
-  console.log(`📡 Resend Audit: Key present? ${!!cleanKey}, Length: ${cleanKey.length}`);
+  // Use a very strict sanitization to handle any "glued" text from Railway
+  const rawKey = process.env.RESEND_API_KEY || '';
+  const cleanKey = rawKey.split('=')[0].split(' ')[0].trim();
+  
+  console.log(`📡 Resend Audit: Key length ${cleanKey.length}`);
   const resend = new Resend(cleanKey);
 
   // Send email using the { data, error } pattern

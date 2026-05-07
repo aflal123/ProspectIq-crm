@@ -326,14 +326,21 @@ router.get('/test-email', async (req, res) => {
 });
 
 // Production Status Dashboard
-router.get('/status', (req, res) => {
+router.get('/status', async (req, res) => {
+  let db_ok = false;
+  try {
+    const { error } = await supabase.from('otps').select('count', { count: 'exact', head: true });
+    db_ok = !error;
+  } catch (e) {
+    db_ok = false;
+  }
+
   res.json({
     status: 'online',
-    resend_key_loaded: !!process.env.RESEND_API_KEY,
-    resend_key_length: process.env.RESEND_API_KEY?.trim().length || 0,
-    supabase_url_loaded: !!process.env.SUPABASE_URL,
-    enable_bypass: process.env.ENABLE_BYPASS,
-    node_env: process.env.NODE_ENV
+    db_connected: db_ok,
+    resend_key_length: (process.env.RESEND_API_KEY || '').split('=')[0].split(' ')[0].trim().length,
+    node_env_clean: (process.env.NODE_ENV || '').split('=')[0].split(' ')[0].trim(),
+    bypass_active: process.env.ENABLE_BYPASS === 'true'
   });
 });
 

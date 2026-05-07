@@ -10,10 +10,11 @@ if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
 }
 
 // Create Supabase Client
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+const supabaseUrl = (process.env.SUPABASE_URL || '').split('=')[0].split(' ')[0].trim();
+const supabaseKey = (process.env.SUPABASE_SERVICE_ROLE_KEY || '').split('=')[0].split(' ')[0].trim();
+
+console.log('🔗 Connecting to Supabase...');
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 console.log('✅ Supabase Connected Successfully');
 
