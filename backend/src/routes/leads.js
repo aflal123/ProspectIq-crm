@@ -30,10 +30,16 @@ router.post('/', authMiddleware, async (req, res) => {
   try {
     // Map frontend field names to actual DB column names
     const { lead_name, name, ...rest } = req.body;
+    const finalName = lead_name || name;
+
+    if (!finalName) {
+      return res.status(400).json({ success: false, message: 'Lead name is required' });
+    }
+
     const leadData = {
       ...rest,
-      name: lead_name || name,           // accept both lead_name and name
-      assigned_to: req.user.id,          // track which user created this lead
+      name: finalName,                   // accept both lead_name and name
+      assigned_to: req.user.id || null,  // track which user created this lead, fallback to null if token lacks id
     };
 
     const { data, error } = await supabase
@@ -43,8 +49,12 @@ router.post('/', authMiddleware, async (req, res) => {
       .single();
 
     if (error) {
-      console.error('Lead insert error:', JSON.stringify(error));
-      throw error;
+      console.error('Lead insert error:', error);
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Database error while creating lead', 
+        detail: error.message || error.details || JSON.stringify(error) 
+      });
     }
 
     res.status(201).json({ 
@@ -54,7 +64,11 @@ router.post('/', authMiddleware, async (req, res) => {
     });
   } catch (err) {
     console.error('Create lead error:', err);
-    res.status(500).json({ message: 'Failed to create lead', detail: err.message });
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to create lead', 
+      detail: err?.message || String(err)
+    });
   }
 });
 
