@@ -102,11 +102,11 @@ router.post('/login', async (req, res) => {
       res.json({ message: 'OTP sent to your email' });
     } catch (err) {
       console.error('❌ Email sending failed:', err.message);
-      // Fallback for development if email fails but we have the code in console
-      if (process.env.NODE_ENV && process.env.NODE_ENV.includes('development')) {
-         return res.json({ message: 'OTP sent (Check server console)', devMode: true });
-      }
-      return res.status(500).json({ message: 'Failed to send OTP email. Please try again.' });
+      return res.status(500).json({ 
+        message: 'Email delivery failed on server.', 
+        error: err.message,
+        tip: 'Check if Gmail is blocking the server IP' 
+      });
     }
 
   } catch (err) {
@@ -197,10 +197,10 @@ router.post('/resend-otp', async (req, res) => {
       res.json({ message: 'New OTP sent to your email' });
     } catch (err) {
       console.error('❌ Resend email failed:', err.message);
-      if (process.env.NODE_ENV && process.env.NODE_ENV.includes('development')) {
-        return res.json({ message: 'New OTP generated (Check server console)', devMode: true });
-      }
-      return res.status(500).json({ message: 'Failed to resend OTP email.' });
+      return res.status(500).json({ 
+        message: 'Resend failed.', 
+        error: err.message 
+      });
     }
   } catch (err) {
     console.error(err)
