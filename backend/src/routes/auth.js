@@ -88,11 +88,16 @@ router.post('/login', async (req, res) => {
       expires_at
     })
 
-    // Send OTP via email — catch email errors separately for clarity
+    // Send OTP via email — wrap in 3s timeout for instant response
+    const emailPromise = sendOTPEmail(email, otp)
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Email timeout')), 3000)
+    )
+
     try {
-      await sendOTPEmail(email, otp)
+      await Promise.race([emailPromise, timeoutPromise])
     } catch (emailErr) {
-      console.error('❌ Email sending failed:', emailErr.message)
+      console.error('❌ Email sending failed or timeout:', emailErr.message)
       console.log(`📧 DEMO OTP for ${email}: ${otp}`)
     }
 
