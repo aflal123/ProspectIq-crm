@@ -1,5 +1,10 @@
 const nodemailer = require('nodemailer');
 
+// Startup check for credentials
+if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+  console.warn('⚠️ WARNING: EMAIL_USER or EMAIL_PASS is not set. OTP emails will fail to send!');
+}
+
 const transporter = nodemailer.createTransport({
   service: 'gmail', // Using the built-in service helper for Gmail
   auth: {
