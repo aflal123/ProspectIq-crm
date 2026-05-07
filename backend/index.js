@@ -14,8 +14,12 @@ app.use(helmet({
   crossOriginResourcePolicy: false,
   contentSecurityPolicy: false,
 }))
-// 1. Sanitize Environment Variables (Removes accidental spaces from .env)
+// 1. Sanitize Environment Variables (Removes accidental "glued" variables)
+const cleanEnv = (val) => (val || '').split('=')[0].split(' ')[0].trim();
+const NODE_ENV = cleanEnv(process.env.NODE_ENV) || 'production';
 const RESEND_KEY = (process.env.RESEND_API_KEY || '').trim();
+
+console.log(`🚀 System starting in ${NODE_ENV} mode`);
 
 // 2. Universal CORS for Debugging Production Launch
 app.use(cors({
