@@ -22,7 +22,11 @@ router.get('/:leadId', authMiddleware, async (req, res) => {
 // ADD note to a lead
 router.post('/:leadId', authMiddleware, async (req, res) => {
   try {
-    const { content } = req.body
+    const content = req.body?.content;
+    if (!content || typeof content !== 'string' || content.trim() === '') {
+      return res.status(400).json({ message: 'Note content is required' })
+    }
+
     const { data, error } = await supabase
       .from('notes')
       .insert({
@@ -33,10 +37,14 @@ router.post('/:leadId', authMiddleware, async (req, res) => {
       .select()
       .single()
 
-    if (error) throw error
+    if (error) {
+      console.error('Insert note error:', error);
+      throw error;
+    }
     res.status(201).json({ success: true, data })
   } catch (err) {
-    res.status(500).json({ message: 'Failed to add note' })
+    console.error('Failed to add note:', err);
+    res.status(500).json({ message: 'Failed to add note', detail: err.message || err.details })
   }
 })
 
