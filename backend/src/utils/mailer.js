@@ -1,49 +1,54 @@
 const nodemailer = require('nodemailer');
+const axios = require('axios');
 
 // Startup check for credentials
-if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-  console.warn('⚠️ WARNING: EMAIL_USER or EMAIL_PASS is not set. OTP emails will fail to send!');
+if (!process.env.EMAIL_USER && !process.env.BREVO_API_KEY) {
+  console.warn('⚠️ WARNING: No email credentials set!');
 }
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true, // Use SSL/TLS
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  timeout: 5000 // 5 second timeout
-});
-
 const sendOTPEmail = async (toEmail, otp) => {
-  const mailOptions = {
+  // 1. If BREVO_API_KEY is set, use the professional API (Always works in Cloud)
+  if (process.env.BREVO_API_KEY) {
+    try {
+      await axios.post('https://api.brevo.com/v3/smtp/email', {
+        sender: { name: "ProspectIQ", email: process.env.EMAIL_USER || "noreply@prospectiq.com" },
+        to: [{ email: toEmail }],
+        subject: "Your ProspectIQ Login OTP",
+        htmlContent: `
+          <div style="font-family: Arial, sans-serif; max-width: 420px; margin: auto; padding: 20px; border: 1px solid #E5E5E5;">
+            <h2 style="color: #2563eb;">ProspectIQ</h2>
+            <p>Your login code is:</p>
+            <h1 style="letter-spacing: 10px; font-size: 32px; text-align: center;">${otp}</h1>
+            <p style="color: #666;">This code expires in 5 minutes.</p>
+          </div>
+        `
+      }, {
+        headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' }
+      });
+      console.log(`✅ Brevo API: OTP sent to ${toEmail}`);
+      return;
+    } catch (err) {
+      console.error('❌ Brevo API failed:', err.response?.data || err.message);
+      throw new Error('Email API failed: ' + (err.response?.data?.message || err.message));
+    }
+  }
+
+  // 2. Fallback to Gmail SMTP (Works for Localhost)
+  const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+    timeout: 5000
+  });
+
+  await transporter.sendMail({
     from: process.env.EMAIL_FROM || `"ProspectIQ" <${process.env.EMAIL_USER}>`,
     to: toEmail,
     subject: 'Your ProspectIQ Login OTP',
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 420px; margin: auto; background-color: #ffffff; border: 1px solid #E5E5E5;">
-        <div style="background-color: #2563eb; padding: 24px 32px;">
-          <h1 style="color: #ffffff; margin: 0; font-size: 22px; letter-spacing: 2px;">ProspectIQ</h1>
-          <p style="color: rgba(255,255,255,0.8); margin: 4px 0 0 0; font-size: 12px;">CRM for modern sales teams</p>
-        </div>
-        <div style="padding: 32px;">
-          <p style="color: #333333; font-size: 15px; margin: 0 0 24px 0;">Your one-time login code is:</p>
-          <div style="background-color: #F5F5F5; border: 1px solid #E5E5E5; padding: 20px; text-align: center; margin-bottom: 24px;">
-            <h2 style="color: #000000; font-size: 36px; letter-spacing: 12px; margin: 0; font-weight: 700;">${otp}</h2>
-          </div>
-          <p style="color: #666666; font-size: 13px; margin: 0 0 8px 0;">⏱ This code expires in <strong style="color: #000000;">5 minutes</strong>.</p>
-          <p style="color: #666666; font-size: 13px; margin: 0;">If you didn't request this, you can safely ignore this email.</p>
-        </div>
-        <div style="background-color: #F5F5F5; padding: 16px 32px; border-top: 1px solid #E5E5E5;">
-          <p style="color: #999999; font-size: 11px; margin: 0; text-align: center;">© 2026 ProspectIQ · All rights reserved</p>
-        </div>
-      </div>
-    `
-  };
-
-  await transporter.sendMail(mailOptions);
-  console.log(`✅ OTP Email sent successfully to: ${toEmail}`);
+    html: `<p>Your login code is: <b>${otp}</b></p>`
+  });
+  console.log(`✅ SMTP: OTP sent to ${toEmail}`);
 };
 
 module.exports = { sendOTPEmail };
