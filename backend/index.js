@@ -14,13 +14,12 @@ app.use(helmet({
   crossOriginResourcePolicy: false,
   contentSecurityPolicy: false,
 }))
+// 1. Sanitize Environment Variables (Removes accidental spaces from .env)
+const RESEND_KEY = (process.env.RESEND_API_KEY || '').trim();
+
+// 2. Universal CORS for Debugging Production Launch
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://prospectiq.online',
-    'https://www.prospectiq.online',
-    'https://prospect-iq-crm.vercel.app'
-  ],
+  origin: true, // Reflects the origin of the request automatically
   credentials: true
 }));
 app.use(express.json());

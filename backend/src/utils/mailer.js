@@ -5,7 +5,9 @@ const { Resend } = require('resend');
  * Compliant with production guardrails
  */
 const sendOTPEmail = async (toEmail, otp) => {
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  // Use the sanitized key from index.js or re-sanitize here
+  const cleanKey = (process.env.RESEND_API_KEY || '').trim();
+  const resend = new Resend(cleanKey);
 
   // Send email using the { data, error } pattern
   const { data, error } = await resend.emails.send({
