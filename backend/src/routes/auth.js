@@ -88,14 +88,21 @@ router.post('/login', async (req, res) => {
       expires_at
     })
 
-    // Send OTP via email
-    await sendOTPEmail(email, otp)
+    // Send OTP via email — catch email errors separately for clarity
+    try {
+      await sendOTPEmail(email, otp)
+    } catch (emailErr) {
+      console.error('❌ Email sending failed:', emailErr.message)
+      return res.status(500).json({ 
+        message: 'Failed to send OTP email. Check your Gmail App Password in .env (EMAIL_PASS).' 
+      })
+    }
 
     res.json({ message: 'OTP sent to your email' })
 
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ message: 'Server error' })
+    console.error('Login error:', err)
+    res.status(500).json({ message: 'Server error during login' })
   }
 })
 
