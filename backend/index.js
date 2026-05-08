@@ -21,9 +21,14 @@ const RESEND_KEY = (process.env.RESEND_API_KEY || '').trim();
 
 console.log(`🚀 System starting in ${NODE_ENV} mode`);
 
-// 2. Universal CORS for Debugging Production Launch
+// 2. Production CORS Policy
 app.use(cors({
-  origin: true, // Reflects the origin of the request automatically
+  origin: [
+    'http://localhost:5173',
+    'https://prospectiq.online',
+    'https://www.prospectiq.online',
+    'https://prospect-iq-crm.vercel.app'
+  ],
   credentials: true
 }));
 app.use(express.json());

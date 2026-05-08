@@ -60,7 +60,7 @@ router.post('/login', async (req, res) => {
   try {
     let { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ message: 'Email and password are required' });
-    
+
     email = email.toLowerCase().trim();
 
     // Find user by email in DB
@@ -97,12 +97,12 @@ router.post('/login', async (req, res) => {
 
     // Send OTP via email
     try {
-      console.log(`📧 [DEV] OTP for ${email}: ${otp}`); 
-      
+      console.log(`📧 [DEV] OTP for ${email}: ${otp}`);
+
       // Professional Bypass: If enabled, we skip real email sending at login
       // so the user can proceed to the code screen and use the master key.
       const skipEmail = process.env.ENABLE_BYPASS === 'true';
-      
+
       if (!skipEmail) {
         await sendOTPEmail(email, otp);
       }
@@ -124,7 +124,7 @@ router.post('/verify-otp', async (req, res) => {
   try {
     let { email, otp } = req.body;
     if (!email || !otp) return res.status(400).json({ message: 'Email and OTP are required' });
-    
+
     email = email.toLowerCase().trim();
 
     // 1. Professional Master Key check
@@ -140,7 +140,7 @@ router.post('/verify-otp', async (req, res) => {
         .eq('otp', otp)
         .eq('used', false)
         .single()
-      
+
       if (error || !data) return res.status(400).json({ message: 'Invalid OTP' });
       otpRecord = data;
     }
@@ -205,9 +205,9 @@ router.post('/resend-otp', async (req, res) => {
       res.json({ message: 'New OTP sent to your email' });
     } catch (err) {
       console.error('❌ Resend email failed:', err.message);
-      return res.status(500).json({ 
-        message: 'Resend failed.', 
-        error: err.message 
+      return res.status(500).json({
+        message: 'Resend failed.',
+        error: err.message
       });
     }
   } catch (err) {
@@ -309,54 +309,18 @@ router.get('/test-email', async (req, res) => {
   try {
     console.log(`🧪 Starting professional mail test to ${testEmail}...`);
     await sendOTPEmail(testEmail, '123456');
-    res.json({ 
-      success: true, 
-      message: `Test email accepted by provider for ${testEmail}. Check your inbox/spam.` 
+    res.json({
+      success: true,
+      message: `Test email accepted by provider for ${testEmail}. Check your inbox/spam.`
     });
   } catch (err) {
     console.error('❌ Professional Test Failed:', err.message);
-    res.status(500).json({ 
-      success: false, 
+    res.status(500).json({
+      success: false,
       error: err.message,
       details: err.response?.data || 'No extra details from provider'
     });
   }
-});
-
-// Production Status Dashboard
-router.get('/status', async (req, res) => {
-  let db_ok = false;
-  try {
-    const { error } = await supabase.from('otps').select('count', { count: 'exact', head: true });
-    db_ok = !error;
-  } catch (e) {
-    db_ok = false;
-  }
-
-  // Test Resend
-  let resend_err = null;
-  try {
-    const rawKey = process.env.RESEND_API_KEY || '';
-    const cleanKey = rawKey.split('=')[0].split(' ')[0].trim();
-    const resend = new Resend(cleanKey);
-    const { error } = await resend.emails.send({
-      from: 'ProspectIQ <auth@contact.prospectiq.online>',
-      to: ['delivered@resend.dev'],
-      subject: 'ProspectIQ Status Test',
-      html: '<strong>Resend API is working!</strong>',
-    });
-    resend_err = error ? error.message : null;
-  } catch (e) {
-    resend_err = e.message;
-  }
-
-  res.json({
-    status: 'online',
-    db_connected: db_ok,
-    resend_error: resend_err,
-    node_env_clean: (process.env.NODE_ENV || '').split('=')[0].split(' ')[0].trim(),
-    bypass_active: process.env.ENABLE_BYPASS === 'true'
-  });
 });
 
 module.exports = router;
