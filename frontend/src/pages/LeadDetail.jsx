@@ -50,15 +50,16 @@ const LeadDetail = () => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const res = await api.get('/leads');
-        const found = res.data.data.find(l => l.id === id);
-        if (!found) { navigate('/leads'); return; }
+        const res = await api.get(`/leads/${id}`);
+        const found = res.data.data;
         setLead(found);
         // If AI score already saved, show it
         if (found.ai_score) {
           setAi({ score: found.ai_score, reasoning: found.ai_reason, strengths:[], risks:[], recommendedAction:'' });
         }
-      } catch { setError('Failed to load lead.'); }
+      } catch (err) { 
+        setError(err.response?.data?.message || 'Failed to load lead.'); 
+      }
       finally { setLoadingLead(false); }
     };
     fetch();
@@ -162,9 +163,9 @@ const LeadDetail = () => {
                   { label:'Phone',      val: lead.phone      || '—' },
                   { label:'Source',     val: lead.lead_source?.replace('_',' ') || '—' },
                   { label:'Deal Value', val: fmt(lead.deal_value) },
-                  { label:'Created',    val: new Date(lead.created_at).toLocaleDateString() },
-                  { label:'Last Updated',val: new Date(lead.updated_at).toLocaleDateString() },
-                  { label:'Assigned To',val: lead.users?.name || 'Sales Rep' },
+                  { label:'Created',    val: new Date(lead.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) },
+                  { label:'Last Updated',val: lead.updated_at ? new Date(lead.updated_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—' },
+                  { label:'Assigned To',val: lead.users?.name || 'Unassigned' },
                 ].map(r => (
                   <div key={r.label} style={styles.infoRow}>
                     <span style={styles.infoLabel}>{r.label}</span>

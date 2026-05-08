@@ -219,7 +219,7 @@ const Leads = () => {
             <table style={styles.table}>
               <thead>
                 <tr>
-                  {['Lead Name','Company','Status','Deal Value','Source','Actions'].map(h => (
+                  {['Lead Name','Company','Status','Deal Value','Assigned To','Source','Actions'].map(h => (
                     <th key={h} style={styles.th}>{h}</th>
                   ))}
                 </tr>
@@ -239,6 +239,7 @@ const Leads = () => {
                     <td style={styles.td}><span style={styles.company}>{lead.company_name || '—'}</span></td>
                     <td style={styles.td}><StatusBadge status={lead.status} /></td>
                     <td style={styles.td}><span style={styles.dealVal}>{fmt(lead.deal_value)}</span></td>
+                    <td style={styles.td}><span style={styles.source}>{lead.users?.name || 'Unassigned'}</span></td>
                     <td style={styles.td}><span style={styles.source}>{lead.lead_source?.replace('_',' ') || '—'}</span></td>
                     <td style={styles.td}>
                       <div style={styles.actions}>

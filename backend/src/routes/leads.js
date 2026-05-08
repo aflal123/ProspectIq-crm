@@ -21,16 +21,31 @@ router.get('/', authMiddleware, async (req, res) => {
 
     if (error) throw error;
 
-    res.json({ 
-      success: true, 
-      count: data.length,
-      data 
-    });
+// GET Single Lead
+router.get('/:id', authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { data, error } = await supabase
+      .from('leads')
+      .select('*, users(name)')
+      .eq('id', id)
+      .single();
+
+    if (error) throw error;
+    if (!data) return res.status(404).json({ message: 'Lead not found' });
+
+    // Security check: if not admin, ensure they own the lead
+    if (req.user.email !== 'admin@example.com' && data.assigned_to !== req.user.id) {
+      return res.status(403).json({ message: 'Access denied to this lead' });
+    }
+
+    res.json({ success: true, data });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Failed to fetch leads' });
+    res.status(500).json({ message: 'Failed to fetch lead details' });
   }
 });
+
 
 // CREATE Lead
 router.post('/', authMiddleware, async (req, res) => {
@@ -46,7 +61,8 @@ router.post('/', authMiddleware, async (req, res) => {
     const leadData = {
       ...rest,
       name: finalName,                   // accept both lead_name and name
-      assigned_to: req.user.id || null,  // track which user created this lead, fallback to null if token lacks id
+      assigned_to: req.user.id || null,  // track which user created this lead
+      updated_at: new Date().toISOString(),
     };
     if (leadData.deal_value === '') leadData.deal_value = null;
 
@@ -93,6 +109,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     const payload = {
       name, company_name, email, phone,
       lead_source, status,
+      updated_at: new Date().toISOString(),
       ...(deal_value !== undefined ? { deal_value: deal_value === '' ? null : deal_value } : {})
     };
 
