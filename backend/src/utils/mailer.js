@@ -15,7 +15,7 @@ const sendOTPEmail = async (toEmail, otp) => {
     console.log(`📡 Resend: Sending OTP to ${toEmail}...`);
     
     const { data, error } = await resend.emails.send({
-      from: 'ProspectIQ <auth@contact.prospectiq.online>',
+      from: 'ProspectIQ <onboarding@contact.prospectiq.online>',
       to: [toEmail],
       subject: `${otp} is your verification code`,
       html: `
