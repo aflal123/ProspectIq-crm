@@ -49,11 +49,18 @@ const LeadModal = ({ lead, onClose, onSave }) => {
     e.preventDefault();
     setSaving(true); setErr('');
     try {
-      const payload = { ...form };
+      const { initial_note, ...payload } = form;
       if (payload.deal_value === '') payload.deal_value = null;
 
-      if (isEdit) await api.put(`/leads/${lead.id}`, payload);
-      else        await api.post('/leads', payload);
+      if (isEdit) {
+        await api.put(`/leads/${lead.id}`, payload);
+      } else {
+        const res = await api.post('/leads', payload);
+        // If there's an initial note, save it using the new lead's ID
+        if (initial_note?.trim()) {
+          await api.post(`/notes/${res.data.data.id}`, { content: initial_note.trim() });
+        }
+      }
       onSave();
     } catch (err) {
       setErr(err.response?.data?.message || 'Failed to save lead.');
@@ -97,9 +104,22 @@ const LeadModal = ({ lead, onClose, onSave }) => {
             </div>
           </div>
           <div>
-            <label style={labelStyle}>Deal Value ($)</label>
+            <label style={labelStyle}>Deal Value (LKR)</label>
             <input type="number" name="deal_value" value={form.deal_value} onChange={handle} placeholder="5000" style={inputStyle}/>
           </div>
+
+          {!isEdit && (
+            <div>
+              <label style={labelStyle}>Initial Note</label>
+              <textarea 
+                name="initial_note" 
+                value={form.initial_note || ''} 
+                onChange={handle} 
+                placeholder="Add some context about this lead..." 
+                style={{ ...inputStyle, minHeight:'80px', resize:'vertical' }}
+              />
+            </div>
+          )}
 
           <div style={{ display:'flex', gap:'10px', marginTop:'6px' }}>
             <button type="button" onClick={onClose} style={styles.cancelBtn}>Cancel</button>
