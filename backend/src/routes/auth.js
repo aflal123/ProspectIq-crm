@@ -340,7 +340,7 @@ router.get('/status', async (req, res) => {
     const cleanKey = rawKey.split('=')[0].split(' ')[0].trim();
     const resend = new Resend(cleanKey);
     const { error } = await resend.emails.send({
-      from: 'ProspectIQ <auth@contact.prospectiq.online>',
+      from: 'ProspectIQ <auth@prospectiq.online>',
       to: ['delivered@resend.dev'], // Official test address
       subject: 'Test',
       html: 'test'

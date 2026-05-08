@@ -10,7 +10,7 @@ const sendOTPEmail = async (toEmail, otp) => {
     
     // Attempt 1: Custom Domain
     const result = await resend.emails.send({
-      from: 'ProspectIQ <auth@contact.prospectiq.online>',
+      from: 'ProspectIQ <auth@prospectiq.online>',
       to: [toEmail],
       subject: `${otp} is your verification code`,
       html: `<strong>Your code is ${otp}</strong>`,
