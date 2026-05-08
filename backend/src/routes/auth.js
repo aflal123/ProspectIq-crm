@@ -339,11 +339,11 @@ router.get('/status', async (req, res) => {
     const rawKey = process.env.RESEND_API_KEY || '';
     const cleanKey = rawKey.split('=')[0].split(' ')[0].trim();
     const resend = new Resend(cleanKey);
-    const { error } = await resend.emails.send({
-      from: 'ProspectIQ <auth@prospectiq.online>',
-      to: ['delivered@resend.dev'], // Official test address
-      subject: 'Test',
-      html: 'test'
+    const { data, error } = await resend.emails.send({
+      from: 'ProspectIQ <auth@contact.prospectiq.online>',
+      to: ['delivered@resend.dev'],
+      subject: 'ProspectIQ Status Test',
+      html: '<strong>Resend API is working!</strong>',
     });
     resend_err = error ? error.message : null;
   } catch (e) {

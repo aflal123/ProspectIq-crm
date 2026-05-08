@@ -6,38 +6,45 @@ const sendOTPEmail = async (toEmail, otp) => {
   const resend = new Resend(cleanKey);
 
   try {
-    console.log(`📡 Sending OTP to ${toEmail}...`);
-    
-    // Attempt 1: Custom Domain
-    const result = await resend.emails.send({
-      from: 'ProspectIQ <auth@prospectiq.online>',
+    // Attempt with your Professional Custom Domain
+    const { data, error } = await resend.emails.send({
+      from: 'ProspectIQ <auth@contact.prospectiq.online>',
       to: [toEmail],
       subject: `${otp} is your verification code`,
-      html: `<strong>Your code is ${otp}</strong>`,
+      html: `
+        <div style="font-family: sans-serif; padding: 20px;">
+          <h2>ProspectIQ Verification</h2>
+          <p>Your one-time code is:</p>
+          <h1 style="color: #2563eb; letter-spacing: 4px;">${otp}</h1>
+          <p style="color: #666; font-size: 14px;">This code will expire in 10 minutes.</p>
+        </div>
+      `,
     });
 
-    if (!result.error) {
-      console.log('✅ Sent via Custom Domain');
-      return;
+    if (error) {
+      console.error('❌ Resend API Error:', error.message);
+      
+      // Fallback to onboarding sender if custom domain isn't ready
+      const fallback = await resend.emails.send({
+        from: 'ProspectIQ <onboarding@resend.dev>',
+        to: [toEmail],
+        subject: `${otp} is your verification code`,
+        html: `<p>Your verification code is <strong>${otp}</strong></p>`,
+      });
+      
+      if (fallback.error) {
+        console.error('❌ Fallback failed:', fallback.error.message);
+        return;
+      }
+      
+      console.log('✅ Sent via Fallback [ID:', fallback.data.id, ']');
+      return fallback.data;
     }
 
-    // Attempt 2: Fallback Onboarding
-    const fallback = await resend.emails.send({
-      from: 'ProspectIQ <onboarding@resend.dev>',
-      to: [toEmail],
-      subject: `${otp} is your verification code`,
-      html: `<strong>Your code is ${otp}</strong>`,
-    });
-
-    if (!fallback.error) {
-      console.log('✅ Sent via Fallback');
-      return;
-    }
-
-    console.warn('⚠️ All email providers failed. Proceeding via Bypass Mode.');
+    console.log('✅ Sent via Custom Domain [ID:', data.id, ']');
+    return data;
   } catch (err) {
-    console.error('❌ Critical Email Crash:', err.message);
-    // NEVER throw here - always allow the user to proceed to the OTP screen
+    console.error('❌ Mailer Crash:', err.message);
   }
 };
 
