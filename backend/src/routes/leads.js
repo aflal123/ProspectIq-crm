@@ -21,6 +21,17 @@ router.get('/', authMiddleware, async (req, res) => {
 
     if (error) throw error;
 
+    res.json({ 
+      success: true, 
+      count: data.length,
+      data 
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to fetch leads' });
+  }
+});
+
 // GET Single Lead
 router.get('/:id', authMiddleware, async (req, res) => {
   try {
