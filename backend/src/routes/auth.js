@@ -339,7 +339,7 @@ router.get('/status', async (req, res) => {
     const rawKey = process.env.RESEND_API_KEY || '';
     const cleanKey = rawKey.split('=')[0].split(' ')[0].trim();
     const resend = new Resend(cleanKey);
-    const { data, error } = await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: 'ProspectIQ <auth@contact.prospectiq.online>',
       to: ['delivered@resend.dev'],
       subject: 'ProspectIQ Status Test',
@@ -354,7 +354,6 @@ router.get('/status', async (req, res) => {
     status: 'online',
     db_connected: db_ok,
     resend_error: resend_err,
-    resend_key_length: (process.env.RESEND_API_KEY || '').split('=')[0].split(' ')[0].trim().length,
     node_env_clean: (process.env.NODE_ENV || '').split('=')[0].split(' ')[0].trim(),
     bypass_active: process.env.ENABLE_BYPASS === 'true'
   });
