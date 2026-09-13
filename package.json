@@ -1,9 +1,30 @@
 {
-  "name": "prospectiq",
+  "name": "prospectiq-crm",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "cd backend && npm install",
-    "start": "cd backend && npm start"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.105.3",
+    "axios": "^1.16.0",
+    "bcryptjs": "^3.0.3",
+    "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^1.14.0",
+    "motion": "^12.38.0",
+    "next": "^15.1.7",
+    "nodemailer": "^8.0.7",
+    "openai": "^6.36.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "resend": "^6.12.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^4.0.0"
   }
 }
